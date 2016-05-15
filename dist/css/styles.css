@@ -1,0 +1,14 @@
+body {
+  background-color: #333;
+}
+.gameContainer{
+  background:transparent;
+}
+p {
+  text-align: center;
+  color: white;
+}
+
+a {
+  color: #3caaff;
+}
