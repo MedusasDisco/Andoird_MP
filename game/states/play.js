@@ -37,7 +37,7 @@ Play.prototype = {
     this.background.autoScroll(-2.5,-10);
 
 
-    this.fog = new Fog(this.game, 0, this.game.height-210, 663, 146);
+    this.fog = new Fog(this.game, 0, this.game.height-180, 663, 146);
     this.game.add.existing(this.fog);
 
     this.mountains2 = new Mountains_2(this.game, 0, this.game.height-290, 663, 146);
@@ -77,7 +77,7 @@ Play.prototype = {
     //this.game.add.existing(this.bird);
 
     // create and add a new Ground object
-    this.ground = new Ground(this.game, 0, 400, 335, 112);
+    this.ground = new Ground(this.game, 0, 400, 336, 112);
     this.game.add.existing(this.ground);
 
 
