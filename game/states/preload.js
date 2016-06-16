@@ -16,8 +16,8 @@ Preload.prototype = {
     this.load.image('background', 'assets/background/spaceBG_2.png');
     this.load.image('mountains', 'assets/background/Mountains_v5.png');
     this.load.image('mountains_2', 'assets/background/mountains_2.png');
-    this.load.image('snowHill', 'assets/background/snowHills.png');
-    this.load.image('fog', 'assets/background/fog_v3.png');
+    this.load.image('snowHill', 'assets/background/snowHills2.png');
+    this.load.image('fog', 'assets/background/fog_v2.png');
     this.load.image('ground', 'assets/Ground_01.png');
     this.load.spritesheet('platform', 'assets/platform_ice_1.png', 181,23,1);
     this.load.image('soundOff', 'assets/sound/sound_mute.png');

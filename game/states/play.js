@@ -15,11 +15,11 @@ var PlatformGroup = require('../prefabs/platformGroup');
 var Scoreboard = require('../prefabs/scoreboard');
 var Mountains = require('../prefabs/mountains');
 var Mountains_2 = require('../prefabs/mountains_2');
-var SnowHill = require('../prefabs/snowHill');
+//var SnowHill = require('../prefabs/snowHill');
 var Fog = require('../prefabs/fog');
 var HealthBar = require('../prefabs/HealthBar');
 var ScoreText = require('../prefabs/scoreText');
-var soundMuted = false;
+var soundMuted = localStorage.getItem('soundMuted') || localStorage.setItem('soundMuted',false);
 
 function Play() {
 }
@@ -31,23 +31,27 @@ Play.prototype = {
     // give our world an initial gravity of 1200
     this.game.physics.arcade.gravity.y = 1200;
 
-
     // add the background sprite
     this.background = this.game.add.tileSprite(0,0, 288, 505, 'background');
     this.background.autoScroll(-2.5,-10);
 
-
-    this.fog = new Fog(this.game, 0, this.game.height-180, 663, 146);
+    this.fog = new Fog(this.game, 0,this.game.backgroundPos.fog, 663, 146);
+    this.fog2 = new Fog(this.game, 0,this.game.backgroundPos.fog2, 663, 146);
+    this.fog3 = new Fog(this.game, 0,this.game.backgroundPos.fog3, 663, 146);
     this.game.add.existing(this.fog);
 
-    this.mountains2 = new Mountains_2(this.game, 0, this.game.height-290, 663, 146);
+    this.mountains2 = new Mountains_2(this.game, 0, this.game.backgroundPos.mountains2, 663, 146);
     this.game.add.existing(this.mountains2);
 
-    this.snowHill = new SnowHill(this.game, 0, this.game.height-260, 663, 146);
-    this.game.add.existing(this.snowHill);
+    this.game.add.existing(this.fog2);
 
-    this.mountains = new Mountains(this.game, 0, this.game.height-235, 576, 130);
+    this.mountains = new Mountains(this.game, 0, this.game.backgroundPos.mountains, 576, 130);
     this.game.add.existing(this.mountains);
+
+    this.game.add.existing(this.fog3);
+
+    // this.snowHill = new SnowHill(this.game, 0, this.game.backgroundPos.snowHill, 663, 146);
+    // this.game.add.existing(this.snowHill);
 
     //this.powerUpBar = this.game.add.graphics(0,50);
 
@@ -77,7 +81,7 @@ Play.prototype = {
     //this.game.add.existing(this.bird);
 
     // create and add a new Ground object
-    this.ground = new Ground(this.game, 0, 400, 336, 112);
+    this.ground = new Ground(this.game, 0, 400, 335, 112);
     this.game.add.existing(this.ground);
 
 
@@ -150,6 +154,7 @@ Play.prototype = {
     this.ouchSound = this.game.add.audio('ouch');
     this.discoSound = this.game.add.audio('discoBall');
 
+    this.game.soundMuted = soundMuted;
     this.setAudioBtn();
 
     this.gameover = false;
@@ -245,13 +250,9 @@ Play.prototype = {
         this.instructionGroup.destroy();
 
 
-
-        //
         this.game.time.events.loop(Phaser.Timer.SECOND * 10, this.increaseDifficulty, this);
         this.game.time.events.loop(Phaser.Timer.SECOND * 1, this.timerHandler, this);
 
-
-       // this.powerUpBar.drawRect(20,50, (this.powerUpBar.charge/100)*100, 25);
 
     }
   },
@@ -259,10 +260,7 @@ Play.prototype = {
     this.game.state.start('charSel');
   },
   setAudioBtn: function(){
-    console.log(soundMuted);
-     if(soundMuted){
-        this.soundButtonoState = 'soundOff';
-    }else{this.soundButtonoState = 'soundOn' }
+    soundMuted ?  this.soundButtonoState = 'soundOff': this.soundButtonoState = 'soundOn';
 
     this.soundButton = this.game.add.button(this.game.width/2, this.game.height - 50, this.soundButtonoState, this.toggleAudio, this);
     this.soundButton.anchor.setTo(0.5,0.5);
@@ -274,11 +272,9 @@ Play.prototype = {
 
     this.soundButton.destroy();
 
-    if(!soundMuted){
-        this.soundButtonoState = 'soundOff';
-    }else{this.soundButtonoState = 'soundOn' }
-
     soundMuted = !soundMuted;
+
+    soundMuted ?  this.soundButtonoState = 'soundOff': this.soundButtonoState = 'soundOn';
 
     this.game.soundMuted = soundMuted;
 
@@ -293,32 +289,30 @@ Play.prototype = {
   },
 
   jumpEnemies: function(){
-    console.log("jumpBool hit");
     this.game.enemyJumpBool = true;
   },
 
   walking: function(human, floor) {
-    if(floor instanceof Ground && !this.human.onGround) {
-        human.onGround = true;
-        human.body.velocity.y=0;
-    }
+      if(floor instanceof Ground && !this.human.onGround) {
+          human.onGround = true;
+          human.body.velocity.y=0;
+      }
   },
 
   enemyWalking: function(floor, enemy) {
-        if(enemy.alive)
-        {
-            if(!enemy.onGround)
-            {
-                enemy.onGround = true;
-                enemy.body.velocity.y=0;
-            }
-            enemy.body.velocity.x= -200;
-        }
-        else{
-            console.log("WHAT");
-            enemy.body.collideWorldBounds = false;
-            enemy.body.velocity.y= 100;
-        }
+      if(enemy.alive)
+      {
+          if(!enemy.onGround)
+          {
+              enemy.onGround = true;
+              enemy.body.velocity.y=0;
+          }
+          enemy.body.velocity.x= -200;
+      }
+      else{
+          enemy.body.collideWorldBounds = false;
+          enemy.body.velocity.y= 100;
+      }
   },
 
   platformHandler: function(human, platform) {
@@ -331,21 +325,24 @@ Play.prototype = {
   },
   updateScore: function(num){
 
-     if(num >=60 || (this.score - this.previousScore) > 60) { this.score = this.previousScorereturn; return }
-     this.score += num;
-     this.scoreText.setText(this.score.toString());
-     this.previousScore = this.score;
+      if(num >=60 || (this.score - this.previousScore) > 60) {
+         this.score = this.previousScore;
+         return;
+      }
+      this.score += num;
+      this.scoreText.setText(this.score.toString());
+      this.previousScore = this.score;
   },
   timerHandler: function(){
-        this.updateScore(1);
+      this.updateScore(1);
   },
 
   medalHandler: function(human, medal) {
-        new ScoreText(this.game ,human.position.x, human.position.y,"25");
-        this.updateScore(25);
+      new ScoreText(this.game ,human.position.x, human.position.y,"25");
+      this.updateScore(25);
 
-        if(!this.game.soundMuted){this.discoSound.play();}
-        medal.kill();
+      if(!this.game.soundMuted){this.discoSound.play();}
+      medal.kill();
   },
 
   deathHandler: function(human, enemy) {
@@ -368,7 +365,6 @@ Play.prototype = {
         if(human.invincible){return enemy.kill();}
         this.scoreboard = new Scoreboard(this.game);
         this.game.add.existing(this.scoreboard);
-        this.submitScore(this.score);
         this.scoreboard.show(this.score);
         this.human.onGround = true;
         if(!this.game.soundMuted){this.groundHitSound.play();}
@@ -388,7 +384,7 @@ Play.prototype = {
         this.background.stopScroll();
         this.mountains.stopScroll();
         this.mountains2.stopScroll();
-        this.snowHill.stopScroll();
+        //this.snowHill.stopScroll();
 
         this.game.flapBool = true;
         this.game.enemyJumpBool = false;

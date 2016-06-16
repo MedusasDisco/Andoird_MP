@@ -15,23 +15,29 @@ CharSel.prototype = {
     this.background = this.game.add.tileSprite(0,0, 288, 505, 'background');
     this.background.autoScroll(-2.5,-5);
 
-    this.fog = new Fog(this.game, 0, this.game.height-210, 663, 146);
+    this.fog = new Fog(this.game, 0,this.game.backgroundPos.fog, 663, 146);
+    this.fog2 = new Fog(this.game, 0,this.game.backgroundPos.fog2, 663, 146);
+    this.fog3 = new Fog(this.game, 0,this.game.backgroundPos.fog3, 663, 146);
     this.game.add.existing(this.fog);
 
-    this.mountains2 = new Mountains_2(this.game, 0, this.game.height-290, 663, 146);
+    this.mountains2 = new Mountains_2(this.game, 0, this.game.backgroundPos.mountains2, 663, 146);
     this.game.add.existing(this.mountains2);
 
-    this.snowHill = new SnowHill(this.game, 0, this.game.height-260, 663, 146);
-    this.game.add.existing(this.snowHill);
+    this.game.add.existing(this.fog2);
 
-    this.mountains = new Mountains(this.game, 0, this.game.height-235, 576, 130);
+    this.mountains = new Mountains(this.game, 0, this.game.backgroundPos.mountains, 576, 130);
     this.game.add.existing(this.mountains);
+
+    this.game.add.existing(this.fog3);
+
+    // this.snowHill = new SnowHill(this.game, 0, this.game.backgroundPos.snowHill, 663, 146);
+    // this.game.add.existing(this.snowHill);
 
     // add the ground sprite as a tile
     // and start scrolling in the negative x direction
     this.ground = this.game.add.tileSprite(0,400, 335,112,'ground');
     this.ground.autoScroll(-200,0);
-    
+
     this.menuBG = this.game.add.graphics(50,50);
     this.menuBG.lineStyle(2, 0xFFFFFF, 1);
     this.menuBG.beginFill(0x1f1544, 1);
@@ -39,22 +45,22 @@ CharSel.prototype = {
 
 
     this.charSelText = this.game.add.bitmapText(40,70 , 'mainFont',"Select Your Character", 20);
-    
+
 
 
     /** STEP 1 **/
-    // create a group to put the title assets in 
+    // create a group to put the title assets in
     // so they can be manipulated as a whole
     this.titleGroup = this.game.add.group()
-      
+
     this.game.humanSpriteSheet = "tyler";
     /** STEP 2 **/
     // create the title sprite
     // and add it to the group
     this.title = this.add.sprite(0,0,'characterSelectSheet');
     this.titleGroup.add(this.title);
-    
-    
+
+
     /** STEP 5 **/
     // Set the originating location of the group
     this.titleGroup.x = 30;
