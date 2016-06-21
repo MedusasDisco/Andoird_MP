@@ -19,12 +19,16 @@ var Mountains_2 = require('../prefabs/mountains_2');
 var Fog = require('../prefabs/fog');
 var HealthBar = require('../prefabs/HealthBar');
 var ScoreText = require('../prefabs/scoreText');
-var soundMuted = localStorage.getItem('soundMuted') || localStorage.setItem('soundMuted',false);
+var soundMuted = localStorage.getItem('soundMuted') || false;
 
 function Play() {
 }
 Play.prototype = {
   create: function() {
+
+    if (!localStorage.getItem('soundMuted')) {
+        localStorage.setItem('soundMuted',false);
+    }
     // start the phaser arcade physics engine
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
 

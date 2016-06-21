@@ -25,7 +25,7 @@ Preload.prototype = {
     this.load.spritesheet('soundSprite', 'assets/sound/soundSprite.png');
 
     // menu.js assets\
-    this.load.image('medusasTitle', 'assets/menuImages/MD.png');
+    this.load.image('medusasTitle', 'assets/menuImages/Title_small.png');
     this.load.image('startButton', 'assets/menuImages/start-button_v2.png');
 
     // charSelect.js assets
