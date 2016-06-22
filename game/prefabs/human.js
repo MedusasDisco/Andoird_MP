@@ -22,7 +22,7 @@ var Human = function(game, x, y, frame) {
   this.name = 'Human';
   this.alive = false;
   this.onGround = false;
-  this.jumpsLeft = 3;
+  this.jumpsLeft = this.game.jumpsLeft || 3;
   this.invincible = false;
 
   // enable physics on the bird
@@ -36,7 +36,7 @@ var Human = function(game, x, y, frame) {
   this.body.setSize(20, 32);
   this.body.friction = new Phaser.Point(0,0);
   this.events.onKilled.add(this.onKilled, this);
-  
+
 };
 
 
@@ -49,9 +49,9 @@ Human.prototype.update = function() {
   // if it is rotate the Human towards the ground by 2.5 degrees
   // if(this.angle < 90 && this.alive) {
   //   this.angle += 2.5;
-  // } 
-  if(this.onGround && this.jumpsLeft<3){
-    this.jumpsLeft = 3;
+  // }
+  if(this.onGround && this.jumpsLeft < this.game.jumpsLeft){
+    this.jumpsLeft = this.game.jumpsLeft || 3;
   }
 
   if(this.body.position.x != (this.game.width / 4)){
@@ -74,7 +74,7 @@ Human.prototype.unCharged = function(){
 
 Human.prototype.jump = function() {
   if(!!this.alive && this.jumpsLeft > 0) {
-    
+
     // play jump sound
     if(!this.game.soundMuted){this.jumpSound.play();}
 
@@ -82,7 +82,7 @@ Human.prototype.jump = function() {
     if(this.onGround){this.onGround = false;}
 
     //cause our Human to "jump" upward
-    this.body.velocity.y = -400;
+    this.body.velocity.y = this.game.velocityY;
 
     // subtract a jump
     this.jumpsLeft --;
@@ -91,7 +91,7 @@ Human.prototype.jump = function() {
 };
 
 
-Human.prototype.revived = function() { 
+Human.prototype.revived = function() {
 };
 
 Human.prototype.onKilled = function() {
@@ -106,4 +106,3 @@ Human.prototype.onKilled = function() {
 };
 
 module.exports = Human;
-

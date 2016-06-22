@@ -369,7 +369,7 @@ var Human = function(game, x, y, frame) {
   this.name = 'Human';
   this.alive = false;
   this.onGround = false;
-  this.jumpsLeft = 3;
+  this.jumpsLeft = this.game.jumpsLeft || 3;
   this.invincible = false;
 
   // enable physics on the bird
@@ -383,7 +383,7 @@ var Human = function(game, x, y, frame) {
   this.body.setSize(20, 32);
   this.body.friction = new Phaser.Point(0,0);
   this.events.onKilled.add(this.onKilled, this);
-  
+
 };
 
 
@@ -396,9 +396,9 @@ Human.prototype.update = function() {
   // if it is rotate the Human towards the ground by 2.5 degrees
   // if(this.angle < 90 && this.alive) {
   //   this.angle += 2.5;
-  // } 
-  if(this.onGround && this.jumpsLeft<3){
-    this.jumpsLeft = 3;
+  // }
+  if(this.onGround && this.jumpsLeft < this.game.jumpsLeft){
+    this.jumpsLeft = this.game.jumpsLeft || 3;
   }
 
   if(this.body.position.x != (this.game.width / 4)){
@@ -421,7 +421,7 @@ Human.prototype.unCharged = function(){
 
 Human.prototype.jump = function() {
   if(!!this.alive && this.jumpsLeft > 0) {
-    
+
     // play jump sound
     if(!this.game.soundMuted){this.jumpSound.play();}
 
@@ -429,7 +429,7 @@ Human.prototype.jump = function() {
     if(this.onGround){this.onGround = false;}
 
     //cause our Human to "jump" upward
-    this.body.velocity.y = -400;
+    this.body.velocity.y = this.game.velocityY;
 
     // subtract a jump
     this.jumpsLeft --;
@@ -438,7 +438,7 @@ Human.prototype.jump = function() {
 };
 
 
-Human.prototype.revived = function() { 
+Human.prototype.revived = function() {
 };
 
 Human.prototype.onKilled = function() {
@@ -453,7 +453,6 @@ Human.prototype.onKilled = function() {
 };
 
 module.exports = Human;
-
 
 },{}],8:[function(require,module,exports){
 'use strict';
@@ -788,14 +787,14 @@ var scoreText = function(game, x, y, text) {
   // enable physics on the bird
   // and disable gravity on the bird
   // until the game is started
- 
+
   this.scoreLabel = this.game.add.bitmapText(x-5, y-50, 'mainFont',text, 20);
 
-  this.scoreLabel.tint = 0xf46f70;
+  this.scoreLabel.tint = this.game.scoreLabel;
 
   this.game.time.events.add(Phaser.Timer.SECOND * .6, this.onKilled, this);
-  
-  
+
+
 };
 
 //scoreText.prototype = Object.create(Phaser.Sprite.prototype);
@@ -806,14 +805,14 @@ scoreText.prototype.update = function() {
   // if it is rotate the Medal towards the ground by 2.5 degrees
   // if(this.angle < 90 && this.alive) {
   //   this.angle += 2.5;
-  // } 
+  // }
 
   // if(!this.alive) {
   //   this.body.velocity.x = 0;
   // }
 };
 
-scoreText.prototype.revived = function() { 
+scoreText.prototype.revived = function() {
 };
 
 scoreText.prototype.onKilled = function() {
@@ -823,7 +822,6 @@ scoreText.prototype.onKilled = function() {
 };
 
 module.exports = scoreText;
-
 
 },{}],17:[function(require,module,exports){
 'use strict';
@@ -1207,22 +1205,37 @@ CharSel.prototype = {
   },
   hunterClick: function() {
     this.game.humanSpriteSheet = "hunter";
+    this.game.jumpsLeft = 3;
+    this.game.velocityY = -400;
+    this.game.scoreLabel = 0xf46f70;
     this.game.state.start('play');
   },
   alexClick: function() {
     this.game.humanSpriteSheet = "alexInst";
+    this.game.jumpsLeft = 4;
+    this.game.velocityY = -380;
+    this.game.scoreLabel = 0xF4B06F;
     this.game.state.start('play');
   },
   tylerClick: function() {
     this.game.humanSpriteSheet = "tyler";
+    this.game.jumpsLeft = 3;
+    this.game.velocityY = -440;
+    this.game.scoreLabel = 0x6FF4F3;
     this.game.state.start('play');
   },
   wyntonClick: function() {
     this.game.humanSpriteSheet = "wynton";
+    this.game.jumpsLeft = 2;
+    this.game.velocityY = -550;
+    this.game.scoreLabel = 0x6FF470;
     this.game.state.start('play');
   },
   robinClick: function() {
     this.game.humanSpriteSheet = "robin";
+    this.game.jumpsLeft = 3;
+    this.game.velocityY = -420;
+    this.game.scoreLabel = 0x706FF4;
     this.game.state.start('play');
   }
 };
@@ -1448,7 +1461,8 @@ Play.prototype = {
     this.previousScore = 0;
     this.scoreLabel = this.game.add.bitmapText((this.game.width/2) - 40, 10, 'mainFont','Score: ', 20);
     this.scoreText = this.game.add.bitmapText(this.game.width/2+20, 10, 'mainFont',this.score.toString(), 20);
-
+    this.scoreLabel.tint = this.game.scoreLabel;
+    this.scoreText.tint = this.game.scoreLabel;
     // this.discoScore = 0;
     // this.discoLabel = this.game.add.bitmapText(20, 10, 'mainFont','Disco Balls:', 20);
     // this.discoText = this.game.add.bitmapText(140, 10, 'mainFont',this.discoScore.toString(), 20);

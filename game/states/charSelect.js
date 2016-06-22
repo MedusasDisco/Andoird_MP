@@ -97,22 +97,37 @@ CharSel.prototype = {
   },
   hunterClick: function() {
     this.game.humanSpriteSheet = "hunter";
+    this.game.jumpsLeft = 3;
+    this.game.velocityY = -400;
+    this.game.scoreLabel = 0xf46f70;
     this.game.state.start('play');
   },
   alexClick: function() {
     this.game.humanSpriteSheet = "alexInst";
+    this.game.jumpsLeft = 4;
+    this.game.velocityY = -380;
+    this.game.scoreLabel = 0xF4B06F;
     this.game.state.start('play');
   },
   tylerClick: function() {
     this.game.humanSpriteSheet = "tyler";
+    this.game.jumpsLeft = 3;
+    this.game.velocityY = -440;
+    this.game.scoreLabel = 0x6FF4F3;
     this.game.state.start('play');
   },
   wyntonClick: function() {
     this.game.humanSpriteSheet = "wynton";
+    this.game.jumpsLeft = 2;
+    this.game.velocityY = -550;
+    this.game.scoreLabel = 0x6FF470;
     this.game.state.start('play');
   },
   robinClick: function() {
     this.game.humanSpriteSheet = "robin";
+    this.game.jumpsLeft = 3;
+    this.game.velocityY = -420;
+    this.game.scoreLabel = 0x706FF4;
     this.game.state.start('play');
   }
 };

@@ -114,7 +114,8 @@ Play.prototype = {
     this.previousScore = 0;
     this.scoreLabel = this.game.add.bitmapText((this.game.width/2) - 40, 10, 'mainFont','Score: ', 20);
     this.scoreText = this.game.add.bitmapText(this.game.width/2+20, 10, 'mainFont',this.score.toString(), 20);
-
+    this.scoreLabel.tint = this.game.scoreLabel;
+    this.scoreText.tint = this.game.scoreLabel;
     // this.discoScore = 0;
     // this.discoLabel = this.game.add.bitmapText(20, 10, 'mainFont','Disco Balls:', 20);
     // this.discoText = this.game.add.bitmapText(140, 10, 'mainFont',this.discoScore.toString(), 20);

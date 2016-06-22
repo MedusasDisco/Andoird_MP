@@ -9,14 +9,14 @@ var scoreText = function(game, x, y, text) {
   // enable physics on the bird
   // and disable gravity on the bird
   // until the game is started
- 
+
   this.scoreLabel = this.game.add.bitmapText(x-5, y-50, 'mainFont',text, 20);
 
-  this.scoreLabel.tint = 0xf46f70;
+  this.scoreLabel.tint = this.game.scoreLabel;
 
   this.game.time.events.add(Phaser.Timer.SECOND * .6, this.onKilled, this);
-  
-  
+
+
 };
 
 //scoreText.prototype = Object.create(Phaser.Sprite.prototype);
@@ -27,14 +27,14 @@ scoreText.prototype.update = function() {
   // if it is rotate the Medal towards the ground by 2.5 degrees
   // if(this.angle < 90 && this.alive) {
   //   this.angle += 2.5;
-  // } 
+  // }
 
   // if(!this.alive) {
   //   this.body.velocity.x = 0;
   // }
 };
 
-scoreText.prototype.revived = function() { 
+scoreText.prototype.revived = function() {
 };
 
 scoreText.prototype.onKilled = function() {
@@ -44,4 +44,3 @@ scoreText.prototype.onKilled = function() {
 };
 
 module.exports = scoreText;
-
