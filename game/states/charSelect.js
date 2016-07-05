@@ -14,6 +14,7 @@ CharSel.prototype = {
 
     this.background = this.game.add.tileSprite(0,0, 288, 505, 'background');
     this.background.autoScroll(-2.5,-5);
+    this.background.menuWidth = (this.game.width / 2) - 180;
 
     this.fog = new Fog(this.game, 0,this.game.backgroundPos.fog, 663, 146);
     this.fog2 = new Fog(this.game, 0,this.game.backgroundPos.fog2, 663, 146);
@@ -30,18 +31,15 @@ CharSel.prototype = {
 
     this.game.add.existing(this.fog3);
 
-    // this.snowHill = new SnowHill(this.game, 0, this.game.backgroundPos.snowHill, 663, 146);
-    // this.game.add.existing(this.snowHill);
-
     // add the ground sprite as a tile
     // and start scrolling in the negative x direction
-    this.ground = this.game.add.tileSprite(0,400, 335,112,'ground');
+    this.ground = this.game.add.tileSprite(0,this.game.backgroundPos.ground, this.game.width,112,'ground');
     this.ground.autoScroll(-200,0);
 
     this.menuBG = this.game.add.graphics(50,50);
     this.menuBG.lineStyle(2, 0xFFFFFF, 1);
     this.menuBG.beginFill(0x1f1544, 1);
-    this.menuBG.drawRect(-30,this.game.height/100, this.game.width - 40, this.game.height/2);
+    this.menuBG.drawRect( this.background.menuWidth, this.game.height/100, 250, 250);
 
 
     this.charSelText = this.game.add.bitmapText(40,70 , 'mainFont',"Select Your Character", 20);
@@ -63,7 +61,7 @@ CharSel.prototype = {
 
     /** STEP 5 **/
     // Set the originating location of the group
-    this.titleGroup.x = 30;
+    this.titleGroup.x = (this.game.width / 2) - 110;
     this.titleGroup.y = 100;
 
     /** STEP 6 **/

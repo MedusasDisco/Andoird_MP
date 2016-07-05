@@ -30,12 +30,12 @@ Preload.prototype = {
 
     // charSelect.js assets
     this.load.image('instructions', 'assets/menuImages/instructions_v2.png');
-    this.load.image('getReady', 'assets/menuImages/get-ready_1.png');
+    this.load.image('getReady', 'assets/menuImages/get-ready_2.png');
     this.load.image('back', 'assets/menuImages/back.png');
 
     this.load.image('scoreboard', 'assets/menuImages/scoreboard_v3.png');
     this.load.spritesheet('discoBall', 'assets/chars/discoBall_v3.png',30, 30, 8);
-    this.load.image('gameover', 'assets/menuImages/gameover_1.png');
+    this.load.image('gameover', 'assets/menuImages/gameover_2.png');
 
 
     // CharSelect assets

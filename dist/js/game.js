@@ -8,7 +8,7 @@ var MenuState = require('./states/menu');
 var PlayState = require('./states/play');
 var PreloadState = require('./states/preload');
 
-var game = new Phaser.Game(288, 505, Phaser.AUTO, 'medusas-pixel');
+var game = new Phaser.Game(500, 805, Phaser.AUTO, 'medusas-pixel');
 
 // Game States
 game.state.add('boot', BootState);
@@ -1122,6 +1122,7 @@ CharSel.prototype = {
 
     this.background = this.game.add.tileSprite(0,0, 288, 505, 'background');
     this.background.autoScroll(-2.5,-5);
+    this.background.menuWidth = (this.game.width / 2) - 180;
 
     this.fog = new Fog(this.game, 0,this.game.backgroundPos.fog, 663, 146);
     this.fog2 = new Fog(this.game, 0,this.game.backgroundPos.fog2, 663, 146);
@@ -1138,18 +1139,15 @@ CharSel.prototype = {
 
     this.game.add.existing(this.fog3);
 
-    // this.snowHill = new SnowHill(this.game, 0, this.game.backgroundPos.snowHill, 663, 146);
-    // this.game.add.existing(this.snowHill);
-
     // add the ground sprite as a tile
     // and start scrolling in the negative x direction
-    this.ground = this.game.add.tileSprite(0,400, 335,112,'ground');
+    this.ground = this.game.add.tileSprite(0,this.game.backgroundPos.ground, this.game.width,112,'ground');
     this.ground.autoScroll(-200,0);
 
     this.menuBG = this.game.add.graphics(50,50);
     this.menuBG.lineStyle(2, 0xFFFFFF, 1);
     this.menuBG.beginFill(0x1f1544, 1);
-    this.menuBG.drawRect(-30,this.game.height/100, this.game.width - 40, this.game.height/2);
+    this.menuBG.drawRect( this.background.menuWidth, this.game.height/100, 250, 250);
 
 
     this.charSelText = this.game.add.bitmapText(40,70 , 'mainFont',"Select Your Character", 20);
@@ -1171,7 +1169,7 @@ CharSel.prototype = {
 
     /** STEP 5 **/
     // Set the originating location of the group
-    this.titleGroup.x = 30;
+    this.titleGroup.x = (this.game.width / 2) - 110;
     this.titleGroup.y = 100;
 
     /** STEP 6 **/
@@ -1259,7 +1257,7 @@ Menu.prototype = {
   create: function() {
 
     // add the background sprite
-    this.background = this.game.add.tileSprite(0,0, 288, 505, 'background');
+    this.background = this.game.add.tileSprite(0,0, this.game.width, this.game.height, 'background');
     this.background.autoScroll(-2.5,-10);
 
     this.game.backgroundPos = {};
@@ -1269,6 +1267,8 @@ Menu.prototype = {
     this.game.backgroundPos.mountains2 = this.game.height-235;
     //this.game.backgroundPos.snowHill = this.game.height-220;
     this.game.backgroundPos.mountains = this.game.height-235;
+    this.game.backgroundPos.ground = this.game.height-105;
+    this.game.backgroundPos.groundSprites = this.game.height-120;
 
     this.fog = new Fog(this.game, 0,this.game.backgroundPos.fog, 663, 146);
     this.fog2 = new Fog(this.game, 0,this.game.backgroundPos.fog2, 663, 146);
@@ -1287,7 +1287,7 @@ Menu.prototype = {
 
     // add the ground sprite as a tile
     // and start scrolling in the negative x direction
-    this.ground = this.game.add.tileSprite(0,400, 335,112,'ground');
+    this.ground = this.game.add.tileSprite(0,this.game.backgroundPos.ground, this.game.width,112,'ground');
     this.ground.autoScroll(-200,0);
 
     // this.menuBG = this.game.add.graphics(50,50);
@@ -1323,7 +1323,7 @@ Menu.prototype = {
 
     /** STEP 5 **/
     // Set the originating location of the group
-    this.titleGroup.x = 30;
+    this.titleGroup.x = (this.game.width/2) - (this.title.width /2);
     this.titleGroup.y = 100;
 
     /** STEP 6 **/
@@ -1383,7 +1383,7 @@ Play.prototype = {
     this.game.physics.arcade.gravity.y = 1200;
 
     // add the background sprite
-    this.background = this.game.add.tileSprite(0,0, 288, 505, 'background');
+    this.background = this.game.add.tileSprite(0,0,this.game.width,this.game.height, 'background');
     this.background.autoScroll(-2.5,-10);
 
     this.fog = new Fog(this.game, 0,this.game.backgroundPos.fog, 663, 146);
@@ -1400,6 +1400,11 @@ Play.prototype = {
     this.game.add.existing(this.mountains);
 
     this.game.add.existing(this.fog3);
+
+    // add the ground sprite as a tile
+    // and start scrolling in the negative x direction
+    this.ground = this.game.add.tileSprite(0,this.game.backgroundPos.ground, this.game.width,112,'ground');
+    this.ground.autoScroll(-200,0);
 
     // this.snowHill = new SnowHill(this.game, 0, this.game.backgroundPos.snowHill, 663, 146);
     // this.game.add.existing(this.snowHill);
@@ -1432,11 +1437,11 @@ Play.prototype = {
     //this.game.add.existing(this.bird);
 
     // create and add a new Ground object
-    this.ground = new Ground(this.game, 0, 400, 335, 112);
+    this.ground = new Ground(this.game, 0, this.game.backgroundPos.ground, this.game.width, 112);
     this.game.add.existing(this.ground);
 
 
-    this.human = new Human(this.game,(this.game.width / 4), 385);
+    this.human = new Human(this.game,(this.game.width / 4), this.game.backgroundPos.groundSprites);
     this.game.add.existing(this.human);
 
     this.human.animations.play(this.game.humanSpriteSheet+"Walk", 12, true);
@@ -1525,8 +1530,6 @@ Play.prototype = {
         }
 
     if(!this.gameover) {
-        // enable collisions between the human and each group in the pipes group
-        //try{
         this.enemies.forEach(function(EnemyGroup) {
             this.game.physics.arcade.collide(this.human, EnemyGroup, this.deathHandler, null, this);
             this.game.physics.arcade.collide(EnemyGroup, this.ground, this.enemyWalking, null, this);
@@ -1550,9 +1553,6 @@ Play.prototype = {
             //this.game.physics.arcade.collide(skyEnemyGroup, this.ground, this.enemyWalking, null, this);
 
         }, this);
-
-
-   // }catch(e){console.log(e);}
 
     }
 
@@ -1769,10 +1769,10 @@ Play.prototype = {
 
     this.platformGenerator.delay = this.game.platformGeneratorIntervals;
 
-    platformGroup.reset(this.game.width+100, 300);
+    platformGroup.reset(this.game.width+100, this.game.backgroundPos.groundSprites - 55);
     platformGroup.generatePlatformType();
 
-    console.log("generate platform in " + this.game.enemyGeneratorIntervals + " seconds");
+    //console.log("generate platform in " + this.game.enemyGeneratorIntervals + " seconds");
   },
 
   generateEnemies: function() {
@@ -1786,14 +1786,14 @@ Play.prototype = {
 
     this.enemyGenerator.delay = this.game.enemyGeneratorIntervals;
 
-    console.log("generate enemy in " + this.game.enemyGeneratorIntervals + " seconds");
-    enemyGroup.reset(this.game.width, 385);
+    //console.log("generate enemy in " + this.game.enemyGeneratorIntervals + " seconds");
+    enemyGroup.reset(this.game.width, this.game.backgroundPos.groundSprites);
 
   },
   generateMedals: function() {
     //this.enemy = new Enemy(this.game,  this.game.width + 40, 385);
 
-    var medalY = this.game.rnd.integerInRange(50, 350);
+    var medalY = this.game.rnd.integerInRange(this.game.backgroundPos.groundSprites- 300, this.game.backgroundPos.groundSprites-10);
     var medalGroup = this.medals.getFirstExists(false);
 
     if(!medalGroup) {
@@ -1804,21 +1804,21 @@ Play.prototype = {
 
     this.medalGenerator.delay = this.game.medalGeneratorIntervals;
 
-    console.log("generate medal in "+this.game.medalGeneratorIntervals+" seconds");
+    //console.log("generate medal in "+this.game.medalGeneratorIntervals+" seconds");
     medalGroup.reset(this.game.width, medalY);
 
   },
   generateSkyEnemies: function() {
     //this.enemy = new Enemy(this.game,  this.game.width + 40, 385);
 
-    var skyEnemyY = this.game.rnd.integerInRange(50, 300);
+    var skyEnemyY = this.game.rnd.integerInRange(this.game.height - this.game.backgroundPos.groundSprites, this.game.backgroundPos.groundSprites - 50);
     var skyEnemyGroup = this.skyEnemies.getFirstExists(false);
 
     if(!skyEnemyGroup) {
         skyEnemyGroup = new SkyEnemyGroup(this.game, this.skyEnemies);
     }
     this.game.skyEnemyGeneratorIntervals = Phaser.Timer.SECOND * this.game.rnd.integerInRange(this.game.skyEnemyGeneratorRangeLow,this.game.skyEnemyGeneratorRangeHigh );
-    console.log("generate sky enemy in "+this.game.skyEnemyGeneratorIntervals+" seconds");
+    // console.log("generate sky enemy in "+this.game.skyEnemyGeneratorIntervals+" seconds");
     this.skyEnemyGenerator.delay = this.game.skyEnemyGeneratorIntervals;
 
     skyEnemyGroup.reset(this.game.width, skyEnemyY);
@@ -1827,46 +1827,8 @@ Play.prototype = {
   },
   submitScore: function (score) {
 
-
-      var message =  '035abec9c53bd47d' + this.playerId + score;
-      var hash = CryptoJS.HmacSHA256(message, '5a2337d09435c49690d451403fd77aa23e540325749518a2227a44bcc472a530');
-      var hashInBase64 = CryptoJS.enc.Base64.stringify(hash);
-
-      $.ajax({
-            method: 'PUT',
-            url: 'http://api.leaderboards.io/leaderboard/035abec9c53bd47d',
-            contentType: 'application/json',
-            data: JSON.stringify({
-              'playerId': this.playerId /*your apps player id. any unique identifier*/ ,
-              'name': 'testy t',
-              'score': 1000,
-              'signature':  hash
-            }),
-            dataType: 'json'
-          })
-          .done(function(response) {
-            console.log(response);
-          })
-          .fail(function(error) {
-            console.log(error);
-      });
-
   },
   increaseDifficulty: function (){
-    console.log("increase difficulty");
-
-      //  ranges for generation
-    // this.game.enemyGeneratorRangeHigh = 6;
-    // this.game.enemyGeneratorRangeLow = 4;
-
-    // this.game.skyEnemyGeneratorRangeHigh = 7;
-    // this.game.skyEnemyGeneratorRangeLow = 3;
-
-    // this.game.medalGeneratorRangeHigh = 6;
-    // this.game.medalGeneratorRangeLow = 5;
-
-    // this.game.platformGeneratorRangeHigh = 8;
-    // this.game.platformGeneratorRangeLow = 4;
 
     if(this.game.enemyGeneratorRangeLow>1){
         this.game.enemyGeneratorRangeHigh -= .5;
@@ -1925,12 +1887,12 @@ Preload.prototype = {
 
     // charSelect.js assets
     this.load.image('instructions', 'assets/menuImages/instructions_v2.png');
-    this.load.image('getReady', 'assets/menuImages/get-ready_1.png');
+    this.load.image('getReady', 'assets/menuImages/get-ready_2.png');
     this.load.image('back', 'assets/menuImages/back.png');
 
     this.load.image('scoreboard', 'assets/menuImages/scoreboard_v3.png');
     this.load.spritesheet('discoBall', 'assets/chars/discoBall_v3.png',30, 30, 8);
-    this.load.image('gameover', 'assets/menuImages/gameover_1.png');
+    this.load.image('gameover', 'assets/menuImages/gameover_2.png');
 
 
     // CharSelect assets

@@ -7,7 +7,7 @@ var MenuState = require('./states/menu');
 var PlayState = require('./states/play');
 var PreloadState = require('./states/preload');
 
-var game = new Phaser.Game(288, 505, Phaser.AUTO, 'medusas-pixel');
+var game = new Phaser.Game(500, 805, Phaser.AUTO, 'medusas-pixel');
 
 // Game States
 game.state.add('boot', BootState);

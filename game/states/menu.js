@@ -14,7 +14,7 @@ Menu.prototype = {
   create: function() {
 
     // add the background sprite
-    this.background = this.game.add.tileSprite(0,0, 288, 505, 'background');
+    this.background = this.game.add.tileSprite(0,0, this.game.width, this.game.height, 'background');
     this.background.autoScroll(-2.5,-10);
 
     this.game.backgroundPos = {};
@@ -24,6 +24,8 @@ Menu.prototype = {
     this.game.backgroundPos.mountains2 = this.game.height-235;
     //this.game.backgroundPos.snowHill = this.game.height-220;
     this.game.backgroundPos.mountains = this.game.height-235;
+    this.game.backgroundPos.ground = this.game.height-105;
+    this.game.backgroundPos.groundSprites = this.game.height-120;
 
     this.fog = new Fog(this.game, 0,this.game.backgroundPos.fog, 663, 146);
     this.fog2 = new Fog(this.game, 0,this.game.backgroundPos.fog2, 663, 146);
@@ -42,7 +44,7 @@ Menu.prototype = {
 
     // add the ground sprite as a tile
     // and start scrolling in the negative x direction
-    this.ground = this.game.add.tileSprite(0,400, 335,112,'ground');
+    this.ground = this.game.add.tileSprite(0,this.game.backgroundPos.ground, this.game.width,112,'ground');
     this.ground.autoScroll(-200,0);
 
     // this.menuBG = this.game.add.graphics(50,50);
@@ -78,7 +80,7 @@ Menu.prototype = {
 
     /** STEP 5 **/
     // Set the originating location of the group
-    this.titleGroup.x = 30;
+    this.titleGroup.x = (this.game.width/2) - (this.title.width /2);
     this.titleGroup.y = 100;
 
     /** STEP 6 **/
