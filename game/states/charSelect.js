@@ -12,7 +12,7 @@ CharSel.prototype = {
   },
   create: function() {
 
-    this.background = this.game.add.tileSprite(0,0, 288, 505, 'background');
+    this.background = this.game.add.tileSprite(0,0, this.game.width, this.game.height, 'background');
     this.background.autoScroll(-2.5,-5);
     this.background.menuWidth = (this.game.width / 2) - 180;
 
@@ -42,7 +42,7 @@ CharSel.prototype = {
     this.menuBG.drawRect( this.background.menuWidth, this.game.height/100, 250, 250);
 
 
-    this.charSelText = this.game.add.bitmapText(40,70 , 'mainFont',"Select Your Character", 20);
+    this.charSelText = this.game.add.bitmapText( (this.game.width/2) - 105 ,70 , 'mainFont',"Select Your Character", 20);
 
 
 

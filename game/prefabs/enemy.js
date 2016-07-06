@@ -27,8 +27,8 @@ var Enemy = function(game, x, y, frame) {
 
   this.jumpTimer = game.time.events.loop(Phaser.Timer.SECOND * 1.50, this.jump, this);
   this.jumpTimer.timer.start();
- 
-  
+
+
 };
 
 Enemy.prototype = Object.create(Phaser.Sprite.prototype);
@@ -39,7 +39,7 @@ Enemy.prototype.update = function() {
   // if it is rotate the Enemy towards the ground by 2.5 degrees
   // if(this.angle < 90 && this.alive) {
   //   this.angle += 2.5;
-  // } 
+  // }
 
   if(!this.alive) {
     this.body.velocity.y = 100;
@@ -62,11 +62,13 @@ Enemy.prototype.jump = function() {
 };
 
 
-Enemy.prototype.revived = function() { 
+Enemy.prototype.revived = function() {
 };
 
 Enemy.prototype.onKilled = function() {
+  console.log(this);
   this.exists = true;
+  this.alive = false;
   this.visible = true;
   this.body.collideWorldBounds = false;
   console.log('killed');
@@ -74,4 +76,3 @@ Enemy.prototype.onKilled = function() {
 };
 
 module.exports = Enemy;
-

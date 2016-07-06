@@ -185,8 +185,9 @@ Play.prototype = {
     if(!this.gameover) {
         this.enemies.forEach(function(EnemyGroup) {
             this.game.physics.arcade.collide(this.human, EnemyGroup, this.deathHandler, null, this);
-            this.game.physics.arcade.collide(EnemyGroup, this.ground, this.enemyWalking, null, this);
-
+            if(EnemyGroup.alive) {
+                  this.game.physics.arcade.collide(EnemyGroup, this.ground, this.enemyWalking, null, this);
+            }
         }, this);
 
         this.platforms.forEach(function(PlatformGroup) {
@@ -305,16 +306,14 @@ Play.prototype = {
   },
 
   enemyWalking: function(floor, enemy) {
-      if(enemy.alive)
-      {
-          if(!enemy.onGround)
-          {
+      if(enemy.alive) {
+          if(!enemy.onGround) {
               enemy.onGround = true;
               enemy.body.velocity.y=0;
           }
           enemy.body.velocity.x= -200;
       }
-      else{
+      else {
           enemy.body.collideWorldBounds = false;
           enemy.body.velocity.y= 100;
       }
@@ -356,10 +355,13 @@ Play.prototype = {
 
         human.body.velocity.y = - 200;
         if(enemy instanceof SkyEnemy){
-             new ScoreText(this.game ,human.position.x, human.position.y,"10");
+            new ScoreText(this.game ,human.position.x, human.position.y,"10");
+            human.jumpsLeft = human.jumpsLeft++;
             this.updateScore(10);
         }else{
-             new ScoreText(this.game ,human.position.x, human.position.y,"5");
+            new ScoreText(this.game ,human.position.x, human.position.y,"5");
+            console.log(enemy);
+            enemy.onKilled();
             this.updateScore(5);
         }
         if(!this.game.soundMuted){this.scoreSound.play();}

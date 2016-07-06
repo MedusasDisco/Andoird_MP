@@ -189,8 +189,8 @@ var Enemy = function(game, x, y, frame) {
 
   this.jumpTimer = game.time.events.loop(Phaser.Timer.SECOND * 1.50, this.jump, this);
   this.jumpTimer.timer.start();
- 
-  
+
+
 };
 
 Enemy.prototype = Object.create(Phaser.Sprite.prototype);
@@ -201,7 +201,7 @@ Enemy.prototype.update = function() {
   // if it is rotate the Enemy towards the ground by 2.5 degrees
   // if(this.angle < 90 && this.alive) {
   //   this.angle += 2.5;
-  // } 
+  // }
 
   if(!this.alive) {
     this.body.velocity.y = 100;
@@ -224,11 +224,13 @@ Enemy.prototype.jump = function() {
 };
 
 
-Enemy.prototype.revived = function() { 
+Enemy.prototype.revived = function() {
 };
 
 Enemy.prototype.onKilled = function() {
+  console.log(this);
   this.exists = true;
+  this.alive = false;
   this.visible = true;
   this.body.collideWorldBounds = false;
   console.log('killed');
@@ -236,7 +238,6 @@ Enemy.prototype.onKilled = function() {
 };
 
 module.exports = Enemy;
-
 
 },{}],4:[function(require,module,exports){
 'use strict';
@@ -836,27 +837,25 @@ var Scoreboard = function(game) {
 
   this.scoreboard = this.create(this.game.width / 2, 200, 'scoreboard');
   this.scoreboard.anchor.setTo(0.5, 0.5);
-  
+
   // this.scoreboard = this.game.add.graphics(50,50);
   // this.scoreboard.lineStyle(2, 0xFFFFFF, 1);
   // this.scoreboard.beginFill(0x1f1544, 1);
   // this.scoreboard.drawRect(-30,this.game.height/100, this.game.width - 40, this.game.height/2);
 
-  this.scoreText = this.game.add.bitmapText((this.scoreboard.width/2)+50, 160, 'mainFont', '', 18);
+  this.scoreText = this.game.add.bitmapText((this.scoreboard.width/2)+150, 160, 'mainFont', '', 18);
   this.add(this.scoreText);
 
-  this.bestText = this.game.add.bitmapText((this.scoreboard.width/2)+40, 215, 'mainFont', '', 18);
+  this.bestText = this.game.add.bitmapText((this.scoreboard.width/2)+140, 215, 'mainFont', '', 18);
   this.add(this.bestText);
 
   // add our start button with a callback
-  this.startButton = this.game.add.button(this.game.width/2, 300, 'startButton', this.startClick, this);
+  this.startButton = this.game.add.button(this.game.width/2 + 100, 300, 'startButton', this.startClick, this);
   this.startButton.anchor.setTo(0.5,0.5);
   this.add(this.startButton);
 
-   this.backButton = this.game.add.button((this.game.width/2)-100, this.game.height - 150, 'back', this.goToCharSel, this);
+  this.backButton = this.game.add.button((this.game.width/2)-100, 300, 'back', this.goToCharSel, this);
   this.backButton.anchor.setTo(0.5,0.5);
-  this.backButton.width = 50;
-  this.backButton.height = 50;
   this.add(this.backButton);
 
 
@@ -1120,7 +1119,7 @@ CharSel.prototype = {
   },
   create: function() {
 
-    this.background = this.game.add.tileSprite(0,0, 288, 505, 'background');
+    this.background = this.game.add.tileSprite(0,0, this.game.width, this.game.height, 'background');
     this.background.autoScroll(-2.5,-5);
     this.background.menuWidth = (this.game.width / 2) - 180;
 
@@ -1150,7 +1149,7 @@ CharSel.prototype = {
     this.menuBG.drawRect( this.background.menuWidth, this.game.height/100, 250, 250);
 
 
-    this.charSelText = this.game.add.bitmapText(40,70 , 'mainFont',"Select Your Character", 20);
+    this.charSelText = this.game.add.bitmapText( (this.game.width/2) - 105 ,70 , 'mainFont',"Select Your Character", 20);
 
 
 
@@ -1532,8 +1531,9 @@ Play.prototype = {
     if(!this.gameover) {
         this.enemies.forEach(function(EnemyGroup) {
             this.game.physics.arcade.collide(this.human, EnemyGroup, this.deathHandler, null, this);
-            this.game.physics.arcade.collide(EnemyGroup, this.ground, this.enemyWalking, null, this);
-
+            if(EnemyGroup.alive) {
+                  this.game.physics.arcade.collide(EnemyGroup, this.ground, this.enemyWalking, null, this);
+            }
         }, this);
 
         this.platforms.forEach(function(PlatformGroup) {
@@ -1652,16 +1652,14 @@ Play.prototype = {
   },
 
   enemyWalking: function(floor, enemy) {
-      if(enemy.alive)
-      {
-          if(!enemy.onGround)
-          {
+      if(enemy.alive) {
+          if(!enemy.onGround) {
               enemy.onGround = true;
               enemy.body.velocity.y=0;
           }
           enemy.body.velocity.x= -200;
       }
-      else{
+      else {
           enemy.body.collideWorldBounds = false;
           enemy.body.velocity.y= 100;
       }
@@ -1703,10 +1701,13 @@ Play.prototype = {
 
         human.body.velocity.y = - 200;
         if(enemy instanceof SkyEnemy){
-             new ScoreText(this.game ,human.position.x, human.position.y,"10");
+            new ScoreText(this.game ,human.position.x, human.position.y,"10");
+            human.jumpsLeft = human.jumpsLeft++;
             this.updateScore(10);
         }else{
-             new ScoreText(this.game ,human.position.x, human.position.y,"5");
+            new ScoreText(this.game ,human.position.x, human.position.y,"5");
+            console.log(enemy);
+            enemy.onKilled();
             this.updateScore(5);
         }
         if(!this.game.soundMuted){this.scoreSound.play();}
@@ -1888,7 +1889,7 @@ Preload.prototype = {
     // charSelect.js assets
     this.load.image('instructions', 'assets/menuImages/instructions_v2.png');
     this.load.image('getReady', 'assets/menuImages/get-ready_2.png');
-    this.load.image('back', 'assets/menuImages/back.png');
+    this.load.image('back', 'assets/menuImages/back_v2.png');
 
     this.load.image('scoreboard', 'assets/menuImages/scoreboard_v3.png');
     this.load.spritesheet('discoBall', 'assets/chars/discoBall_v3.png',30, 30, 8);

@@ -10,27 +10,25 @@ var Scoreboard = function(game) {
 
   this.scoreboard = this.create(this.game.width / 2, 200, 'scoreboard');
   this.scoreboard.anchor.setTo(0.5, 0.5);
-  
+
   // this.scoreboard = this.game.add.graphics(50,50);
   // this.scoreboard.lineStyle(2, 0xFFFFFF, 1);
   // this.scoreboard.beginFill(0x1f1544, 1);
   // this.scoreboard.drawRect(-30,this.game.height/100, this.game.width - 40, this.game.height/2);
 
-  this.scoreText = this.game.add.bitmapText((this.scoreboard.width/2)+50, 160, 'mainFont', '', 18);
+  this.scoreText = this.game.add.bitmapText((this.scoreboard.width/2)+150, 160, 'mainFont', '', 18);
   this.add(this.scoreText);
 
-  this.bestText = this.game.add.bitmapText((this.scoreboard.width/2)+40, 215, 'mainFont', '', 18);
+  this.bestText = this.game.add.bitmapText((this.scoreboard.width/2)+140, 215, 'mainFont', '', 18);
   this.add(this.bestText);
 
   // add our start button with a callback
-  this.startButton = this.game.add.button(this.game.width/2, 300, 'startButton', this.startClick, this);
+  this.startButton = this.game.add.button(this.game.width/2 + 100, 300, 'startButton', this.startClick, this);
   this.startButton.anchor.setTo(0.5,0.5);
   this.add(this.startButton);
 
-   this.backButton = this.game.add.button((this.game.width/2)-100, this.game.height - 150, 'back', this.goToCharSel, this);
+  this.backButton = this.game.add.button((this.game.width/2)-100, 300, 'back', this.goToCharSel, this);
   this.backButton.anchor.setTo(0.5,0.5);
-  this.backButton.width = 50;
-  this.backButton.height = 50;
   this.add(this.backButton);
 
 
