@@ -16,17 +16,17 @@ CharSel.prototype = {
     this.background.autoScroll(-2.5,-5);
     this.background.menuWidth = (this.game.width / 2) - 180;
 
-    this.fog = new Fog(this.game, 0,this.game.backgroundPos.fog, 663, 146);
-    this.fog2 = new Fog(this.game, 0,this.game.backgroundPos.fog2, 663, 146);
-    this.fog3 = new Fog(this.game, 0,this.game.backgroundPos.fog3, 663, 146);
+    this.fog = new Fog(this.game, 0,this.game.backgroundPos.fog, this.game.width, 146);
+    this.fog2 = new Fog(this.game, 0,this.game.backgroundPos.fog2, this.game.width, 146);
+    this.fog3 = new Fog(this.game, 0,this.game.backgroundPos.fog3, this.game.width, 146);
     this.game.add.existing(this.fog);
 
-    this.mountains2 = new Mountains_2(this.game, 0, this.game.backgroundPos.mountains2, 663, 146);
+    this.mountains2 = new Mountains_2(this.game, 0, this.game.backgroundPos.mountains2, this.game.width, 146);
     this.game.add.existing(this.mountains2);
 
     this.game.add.existing(this.fog2);
 
-    this.mountains = new Mountains(this.game, 0, this.game.backgroundPos.mountains, 576, 130);
+    this.mountains = new Mountains(this.game, 0, this.game.backgroundPos.mountains, this.game.width, 130);
     this.game.add.existing(this.mountains);
 
     this.game.add.existing(this.fog3);

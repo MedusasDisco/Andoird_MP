@@ -5,6 +5,9 @@ var Mountains_2 = require('../prefabs/mountains_2');
 var SnowHill = require('../prefabs/snowHill');
 var Fog = require('../prefabs/fog');
 
+var leaderboardId = "CgkIg62_ic4ZEAIQAg";
+var achievementId1 = "CgkIg62_ic4ZEAIQAA";
+
 function Menu() {}
 
 Menu.prototype = {
@@ -18,26 +21,26 @@ Menu.prototype = {
     this.background.autoScroll(-2.5,-10);
 
     this.game.backgroundPos = {};
-    this.game.backgroundPos.fog = this.game.height-220;
+    this.game.backgroundPos.fog = this.game.height-230;
     this.game.backgroundPos.fog2 = this.game.height-200;
-    this.game.backgroundPos.fog3 = this.game.height-190;
+    this.game.backgroundPos.fog3 = this.game.height-180;
     this.game.backgroundPos.mountains2 = this.game.height-235;
     //this.game.backgroundPos.snowHill = this.game.height-220;
     this.game.backgroundPos.mountains = this.game.height-235;
     this.game.backgroundPos.ground = this.game.height-105;
     this.game.backgroundPos.groundSprites = this.game.height-120;
 
-    this.fog = new Fog(this.game, 0,this.game.backgroundPos.fog, 663, 146);
-    this.fog2 = new Fog(this.game, 0,this.game.backgroundPos.fog2, 663, 146);
-    this.fog3 = new Fog(this.game, 0,this.game.backgroundPos.fog3, 663, 146);
+    this.fog = new Fog(this.game, 0,this.game.backgroundPos.fog, this.game.width, 146);
+    this.fog2 = new Fog(this.game, 0,this.game.backgroundPos.fog2, this.game.width, 146);
+    this.fog3 = new Fog(this.game, 0,this.game.backgroundPos.fog3, this.game.width, 146);
     this.game.add.existing(this.fog);
 
-    this.mountains2 = new Mountains_2(this.game, 0, this.game.backgroundPos.mountains2, 663, 146);
+    this.mountains2 = new Mountains_2(this.game, 0, this.game.backgroundPos.mountains2, this.game.width, 146);
     this.game.add.existing(this.mountains2);
 
     this.game.add.existing(this.fog2);
 
-    this.mountains = new Mountains(this.game, 0, this.game.backgroundPos.mountains, 576, 130);
+    this.mountains = new Mountains(this.game, 0, this.game.backgroundPos.mountains, this.game.width, 130);
     this.game.add.existing(this.mountains);
 
     this.game.add.existing(this.fog3);

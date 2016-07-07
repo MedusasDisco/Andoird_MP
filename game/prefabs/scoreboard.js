@@ -16,18 +16,18 @@ var Scoreboard = function(game) {
   // this.scoreboard.beginFill(0x1f1544, 1);
   // this.scoreboard.drawRect(-30,this.game.height/100, this.game.width - 40, this.game.height/2);
 
-  this.scoreText = this.game.add.bitmapText((this.scoreboard.width/2)+150, 160, 'mainFont', '', 18);
+  this.scoreText = this.game.add.bitmapText((this.game.width/2), 160, 'mainFont', '', 18);
   this.add(this.scoreText);
 
-  this.bestText = this.game.add.bitmapText((this.scoreboard.width/2)+140, 215, 'mainFont', '', 18);
+  this.bestText = this.game.add.bitmapText((this.game.width/2), 215, 'mainFont', '', 18);
   this.add(this.bestText);
 
   // add our start button with a callback
-  this.startButton = this.game.add.button(this.game.width/2 + 100, 300, 'startButton', this.startClick, this);
+  this.startButton = this.game.add.button(this.game.width/2 + 60, 300, 'startButton', this.startClick, this);
   this.startButton.anchor.setTo(0.5,0.5);
   this.add(this.startButton);
 
-  this.backButton = this.game.add.button((this.game.width/2)-100, 300, 'back', this.goToCharSel, this);
+  this.backButton = this.game.add.button((this.game.width/2)- 60, 300, 'back', this.goToCharSel, this);
   this.backButton.anchor.setTo(0.5,0.5);
   this.add(this.backButton);
 

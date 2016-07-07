@@ -20,7 +20,7 @@
 
       function playAudio(url) {
           // Play the audio file at url
-          var my_media = new Media('file://localhost/assets/sound/notACare.mp3',
+          var my_media = new Media('/assets/sound/notACare.mp3',
               // success callback
               function () {
                   console.log("playAudio():Audio Success");
@@ -38,7 +38,7 @@
 </head>
 <body >
 <div id="gameContainer">
-<center><div style="width:100%;" id="medusas-pixel"></div></center>
+<center><div style="width:100%;height:100%;position:absolute;margin:-8px;" id="medusas-pixel"></div></center>
 
 </div>
 

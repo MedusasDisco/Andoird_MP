@@ -53,7 +53,6 @@ Enemy.prototype.jump = function() {
     if(this.onGround){this.onGround = false;}
 
     //cause our Human to "jump" upward
-    console.log("jump");
     this.body.velocity.y = this.game.rnd.integerInRange(-400,-600);
 
     // rotate the Enemy to -40 degrees
@@ -70,7 +69,7 @@ Enemy.prototype.onKilled = function() {
   this.exists = true;
   this.alive = false;
   this.visible = true;
-  this.body.collideWorldBounds = false;
+  this.body.velocity.y = 100;
   console.log('killed');
   console.log('alive:', this.alive);
 };

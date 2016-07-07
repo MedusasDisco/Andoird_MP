@@ -39,17 +39,17 @@ Play.prototype = {
     this.background = this.game.add.tileSprite(0,0,this.game.width,this.game.height, 'background');
     this.background.autoScroll(-2.5,-10);
 
-    this.fog = new Fog(this.game, 0,this.game.backgroundPos.fog, 663, 146);
-    this.fog2 = new Fog(this.game, 0,this.game.backgroundPos.fog2, 663, 146);
-    this.fog3 = new Fog(this.game, 0,this.game.backgroundPos.fog3, 663, 146);
+    this.fog = new Fog(this.game, 0,this.game.backgroundPos.fog, this.game.width, 146);
+    this.fog2 = new Fog(this.game, 0,this.game.backgroundPos.fog2, this.game.width, 146);
+    this.fog3 = new Fog(this.game, 0,this.game.backgroundPos.fog3, this.game.width, 146);
     this.game.add.existing(this.fog);
 
-    this.mountains2 = new Mountains_2(this.game, 0, this.game.backgroundPos.mountains2, 663, 146);
+    this.mountains2 = new Mountains_2(this.game, 0, this.game.backgroundPos.mountains2, this.game.width, 146);
     this.game.add.existing(this.mountains2);
 
     this.game.add.existing(this.fog2);
 
-    this.mountains = new Mountains(this.game, 0, this.game.backgroundPos.mountains, 576, 130);
+    this.mountains = new Mountains(this.game, 0, this.game.backgroundPos.mountains, this.game.width, 130);
     this.game.add.existing(this.mountains);
 
     this.game.add.existing(this.fog3);
@@ -185,9 +185,7 @@ Play.prototype = {
     if(!this.gameover) {
         this.enemies.forEach(function(EnemyGroup) {
             this.game.physics.arcade.collide(this.human, EnemyGroup, this.deathHandler, null, this);
-            if(EnemyGroup.alive) {
-                  this.game.physics.arcade.collide(EnemyGroup, this.ground, this.enemyWalking, null, this);
-            }
+            this.game.physics.arcade.collide(EnemyGroup, this.ground, this.enemyWalking, null, this);
         }, this);
 
         this.platforms.forEach(function(PlatformGroup) {
@@ -314,6 +312,7 @@ Play.prototype = {
           enemy.body.velocity.x= -200;
       }
       else {
+          console.log('dead');
           enemy.body.collideWorldBounds = false;
           enemy.body.velocity.y= 100;
       }
@@ -353,6 +352,7 @@ Play.prototype = {
     //console.log(human.body.touching.down+","+enemy.body.touching.up);
     if(human.body.touching.down && enemy.body.touching.up ){
 
+      console.log(human.jumpsLeft);
         human.body.velocity.y = - 200;
         if(enemy instanceof SkyEnemy){
             new ScoreText(this.game ,human.position.x, human.position.y,"10");
