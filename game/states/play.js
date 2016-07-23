@@ -152,7 +152,7 @@ Play.prototype = {
     this.game.skyEnemyGeneratorRangeLow = 3;
 
     this.game.medalGeneratorRangeHigh = 6;
-    this.game.medalGeneratorRangeLow = 5;
+    this.game.medalGeneratorRangeLow = 4;
 
     this.game.platformGeneratorRangeHigh = 8;
     this.game.platformGeneratorRangeLow = 4;
@@ -185,7 +185,9 @@ Play.prototype = {
     if(!this.gameover) {
         this.enemies.forEach(function(EnemyGroup) {
             this.game.physics.arcade.collide(this.human, EnemyGroup, this.deathHandler, null, this);
-            this.game.physics.arcade.collide(EnemyGroup, this.ground, this.enemyWalking, null, this);
+            if (EnemyGroup.groundEnemy.alive) {
+                  this.game.physics.arcade.collide(EnemyGroup, this.ground, this.enemyWalking, null, this);
+            }
         }, this);
 
         this.platforms.forEach(function(PlatformGroup) {
@@ -246,6 +248,8 @@ Play.prototype = {
 
         // Set time for Enemies to start jumping
         this.game.time.events.add(Phaser.Timer.SECOND * 45, this.jumpEnemies, this);
+        this.game.time.events.add(Phaser.Timer.SECOND * 60, this.purpleSnakes, this);
+        this.game.time.events.add(Phaser.Timer.SECOND * 120, this.blackSnakes, this);
 
         this.enemyGenerator.timer.start();
         this.skyEnemyGenerator.timer.start();
@@ -294,6 +298,12 @@ Play.prototype = {
 
   jumpEnemies: function(){
     this.game.enemyJumpBool = true;
+  },
+  purpleSnakes: function(){
+    this.game.snakes.purple = true;
+  },
+  blackSnakes: function(){
+    this.game.snake.black = true;
   },
 
   walking: function(human, floor) {
@@ -352,16 +362,15 @@ Play.prototype = {
     //console.log(human.body.touching.down+","+enemy.body.touching.up);
     if(human.body.touching.down && enemy.body.touching.up ){
 
-      console.log(human.jumpsLeft);
         human.body.velocity.y = - 200;
+        enemy.kill();
         if(enemy instanceof SkyEnemy){
             new ScoreText(this.game ,human.position.x, human.position.y,"10");
-            human.jumpsLeft = human.jumpsLeft++;
+            human.jumpsLeft = human.jumpsLeft+1;
             this.updateScore(10);
         }else{
             new ScoreText(this.game ,human.position.x, human.position.y,"5");
-            console.log(enemy);
-            enemy.onKilled();
+            human.jumpsLeft = human.jumpsLeft;
             this.updateScore(5);
         }
         if(!this.game.soundMuted){this.scoreSound.play();}

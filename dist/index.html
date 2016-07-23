@@ -12,34 +12,84 @@
   <script type="text/javascript"  src="js/phaser.js"></script>
   <script type="text/javascript"  src="js/game.js"></script>
   <script type="text/javascript">
+  var leaderboardId = "CgkIg62_ic4ZEAIQAg";
+  var achievementId1 = "CgkIg62_ic4ZEAIQAA";
+  document.addEventListener("deviceready", function(){
+  window.game.setUp();
 
-      document.addEventListener("deviceready", onDeviceReady, false);
-      function onDeviceReady() {
-          playAudio()
-      }
+  //callback
+  window.game.onLoginSucceeded = function(result) {
+      var playerDetail = result;
+      alert('onLoginSucceeded: ' + playerDetail['playerId'] + ' ' + playerDetail['playerDisplayName']);
+  };
+  window.game.onLoginFailed = function() {
+      alert('onLoginFailed');
+  };
+  //
+  window.game.onSubmitScoreSucceeded = function() {
+      alert('onSubmitScoreSucceeded');
+  };
+  window.game.onSubmitScoreFailed = function() {
+      alert('onSubmitScoreFailed');
+  };
+  window.game.onGetPlayerScoreSucceeded = function(result) {
+      var playerScore = result;
+      alert('onGetPlayerScoreSucceeded: ' + playerScore);
+  };
+  window.game.onGetPlayerScoreFailed = function() {
+      alert('onGetPlayerScoreFailed');
+  };
+  //
+  window.game.onUnlockAchievementSucceeded = function() {
+      alert('onUnlockAchievementSucceeded');
+  };
+  window.game.onUnlockAchievementFailed = function() {
+      alert('onUnlockAchievementFailed');
+  };
+  window.game.onIncrementAchievementSucceeded = function() {
+      alert('onIncrementAchievementSucceeded');
+  };
+  window.game.onIncrementAchievementFailed = function() {
+      alert('onIncrementAchievementFailed');
+  };
+  window.game.onResetAchievementsSucceeded = function() {
+      alert('onResetAchievementsSucceeded');
+  };
+  window.game.onResetAchievementsFailed = function() {
+      alert('onResetAchievementsFailed');
+  };
+  //
+  window.game.onGetPlayerImageSucceeded = function(result) {
+      var playerImageUrl = result;
+      alert('onGetPlayerImageSucceeded: ' + playerImageUrl);
+  };
+  window.game.onGetPlayerImageFailed = function() {
+      alert('onGetPlayerImageFailed');
+  };
+}, false);
 
-      function playAudio(url) {
-          // Play the audio file at url
-          var my_media = new Media('/assets/sound/notACare.mp3',
-              // success callback
-              function () {
-                  console.log("playAudio():Audio Success");
-              },
-              // error callback
-              function (err) {
-                  console.log("playAudio():Audio Error: " + err);
-              }
-          );
-          // Play audio
-          my_media.play();
-      }
 
   </script>
 </head>
 <body >
 <div id="gameContainer">
-<center><div style="width:100%;height:100%;position:absolute;margin:-8px;" id="medusas-pixel"></div></center>
+<center><div style="width:100%;height:80%;position:absolute;margin:-8px;" id="medusas-pixel"></div></center>
+<div style="position:absolute;width:100%;padding:15px;top:80%;height:20%;">
+<button onclick="window.game.login();">login</button>
+<button onclick="window.game.logout();">logout</button>
+<button onclick="alert(window.game.isLoggedIn());">isLoggedIn</button>
+<br>
+<button onclick="window.game.submitScore(leaderboardId, 5);//leaderboardId, score">submitScore</button>
+<button onclick="window.game.showLeaderboard(leaderboardId);">showLeaderboard</button>
+<button onclick="window.game.showLeaderboards();">showLeaderboards</button>
+<button onclick="window.game.getPlayerScore(leaderboardId);">getPlayerScore</button>
+<br>
+<button onclick="window.game.unlockAchievement(achievementId1);">unlockAchievement1</button>
+<button onclick="window.game.incrementAchievement(achievementId1, 2); //achievementId, incrementalStepOrCurrentPercent: Incremental step (android) or current percent (ios) for incremental achievement.">incrementAchievement1</button></p>
 
+<button onclick="window.game.showAchievements();">showAchievements</button>
+<button onclick="window.game.resetAchievements();">resetAchievements</button>
+<button onclick="window.game.getPlayerImage();">getPlayerImage</button>
 </div>
 
 </body>

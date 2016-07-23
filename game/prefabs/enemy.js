@@ -4,6 +4,7 @@ var Enemy = function(game, x, y, frame) {
   Phaser.Sprite.call(this, game, x, y, 'enemy', frame);
   this.anchor.setTo(0.5, 0.5);
   this.animations.add('walkLeft', [0,1,2,1] );
+  this.animations.add('dead', [3] );
   this.animations.play('walkLeft', 12, true);
 
 
@@ -35,15 +36,7 @@ Enemy.prototype = Object.create(Phaser.Sprite.prototype);
 Enemy.prototype.constructor = Enemy;
 
 Enemy.prototype.update = function() {
-  // check to see if our angle is less than 90
-  // if it is rotate the Enemy towards the ground by 2.5 degrees
-  // if(this.angle < 90 && this.alive) {
-  //   this.angle += 2.5;
-  // }
 
-  if(!this.alive) {
-    this.body.velocity.y = 100;
-  }
 };
 
 Enemy.prototype.jump = function() {
@@ -62,16 +55,18 @@ Enemy.prototype.jump = function() {
 
 
 Enemy.prototype.revived = function() {
+
+  this.animations.play('walkLeft', 12, true);
 };
 
 Enemy.prototype.onKilled = function() {
-  console.log(this);
+  this.body.velocity.y = 100;
+  this.animations.play('dead', 1, true);
   this.exists = true;
   this.alive = false;
   this.visible = true;
   this.body.velocity.y = 100;
-  console.log('killed');
-  console.log('alive:', this.alive);
+  this.game.time.events.add(Phaser.Timer.SECOND * 1, this.revived, this);
 };
 
 module.exports = Enemy;

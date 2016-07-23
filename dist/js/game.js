@@ -165,6 +165,7 @@ var Enemy = function(game, x, y, frame) {
   Phaser.Sprite.call(this, game, x, y, 'enemy', frame);
   this.anchor.setTo(0.5, 0.5);
   this.animations.add('walkLeft', [0,1,2,1] );
+  this.animations.add('dead', [3] );
   this.animations.play('walkLeft', 12, true);
 
 
@@ -196,15 +197,7 @@ Enemy.prototype = Object.create(Phaser.Sprite.prototype);
 Enemy.prototype.constructor = Enemy;
 
 Enemy.prototype.update = function() {
-  // check to see if our angle is less than 90
-  // if it is rotate the Enemy towards the ground by 2.5 degrees
-  // if(this.angle < 90 && this.alive) {
-  //   this.angle += 2.5;
-  // }
 
-  if(!this.alive) {
-    this.body.velocity.y = 100;
-  }
 };
 
 Enemy.prototype.jump = function() {
@@ -223,16 +216,18 @@ Enemy.prototype.jump = function() {
 
 
 Enemy.prototype.revived = function() {
+
+  this.animations.play('walkLeft', 12, true);
 };
 
 Enemy.prototype.onKilled = function() {
-  console.log(this);
+  this.body.velocity.y = 100;
+  this.animations.play('dead', 1, true);
   this.exists = true;
   this.alive = false;
   this.visible = true;
   this.body.velocity.y = 100;
-  console.log('killed');
-  console.log('alive:', this.alive);
+  this.game.time.events.add(Phaser.Timer.SECOND * 1, this.revived, this);
 };
 
 module.exports = Enemy;
@@ -937,6 +932,7 @@ var SkyEnemy = function(game, x, y, frame) {
   this.animations.add('blackSnake', [9,10,11,10] );
   this.animations.play('greenSnake', 12, true);
 
+  this.snakeArray= [0,0,0,0,0,1,1,2,2,1]
 
   this.flapSound = this.game.add.audio('flap');
 
@@ -944,13 +940,10 @@ var SkyEnemy = function(game, x, y, frame) {
   this.alive = false;
   this.onGround = true;
 
+
+
   this.flapTimer = game.time.events.loop(Phaser.Timer.SECOND * .50, this.flap, this);
   this.flapTimer.timer.start();
- 
-
-  // enable physics on the bird
-  // and disable gravity on the bird
-  // until the game is started
 
   this.game.physics.arcade.enableBody(this);
   this.body.allowGravity = true;
@@ -960,7 +953,7 @@ var SkyEnemy = function(game, x, y, frame) {
 
   this.events.onKilled.add(this.onKilled, this);
   this.body.velocity.y = -300;
-  
+
 };
 
 SkyEnemy.prototype = Object.create(Phaser.Sprite.prototype);
@@ -971,7 +964,7 @@ SkyEnemy.prototype.update = function() {
   // if it is rotate the SkyEnemy towards the ground by 2.5 degrees
   // if(this.angle < 90 && this.alive) {
   //   this.angle += 2.5;
-  // } 
+  // }
 
 
   if(!this.alive) {
@@ -990,23 +983,26 @@ SkyEnemy.prototype.flap = function() {
     //this.game.add.tween(this).to({angle: 10}, 100).start();
   }
 
-  
+
 
 };
 
-SkyEnemy.prototype.revived = function() { 
+SkyEnemy.prototype.revived = function() {
+  if(this.game.snakes.purple){
+      var snakeType = Math.floor(Math.random()*20);
+      
+      this.animations.play('purpleSnake', 12, true);
+  }
 };
 
 SkyEnemy.prototype.onKilled = function() {
   this.exists = true;
   this.visible = true;
   this.body.collideWorldBounds = false;
-  console.log('killed');
-  console.log('alive:', this.alive);
+  this.game.time.events.add(Phaser.Timer.SECOND * 1, this.revived, this);
 };
 
 module.exports = SkyEnemy;
-
 
 },{}],19:[function(require,module,exports){
 'use strict';
@@ -1499,7 +1495,7 @@ Play.prototype = {
     this.game.skyEnemyGeneratorRangeLow = 3;
 
     this.game.medalGeneratorRangeHigh = 6;
-    this.game.medalGeneratorRangeLow = 5;
+    this.game.medalGeneratorRangeLow = 4;
 
     this.game.platformGeneratorRangeHigh = 8;
     this.game.platformGeneratorRangeLow = 4;
@@ -1532,7 +1528,9 @@ Play.prototype = {
     if(!this.gameover) {
         this.enemies.forEach(function(EnemyGroup) {
             this.game.physics.arcade.collide(this.human, EnemyGroup, this.deathHandler, null, this);
-            this.game.physics.arcade.collide(EnemyGroup, this.ground, this.enemyWalking, null, this);
+            if (EnemyGroup.groundEnemy.alive) {
+                  this.game.physics.arcade.collide(EnemyGroup, this.ground, this.enemyWalking, null, this);
+            }
         }, this);
 
         this.platforms.forEach(function(PlatformGroup) {
@@ -1593,6 +1591,8 @@ Play.prototype = {
 
         // Set time for Enemies to start jumping
         this.game.time.events.add(Phaser.Timer.SECOND * 45, this.jumpEnemies, this);
+        this.game.time.events.add(Phaser.Timer.SECOND * 60, this.purpleSnakes, this);
+        this.game.time.events.add(Phaser.Timer.SECOND * 120, this.blackSnakes, this);
 
         this.enemyGenerator.timer.start();
         this.skyEnemyGenerator.timer.start();
@@ -1641,6 +1641,12 @@ Play.prototype = {
 
   jumpEnemies: function(){
     this.game.enemyJumpBool = true;
+  },
+  purpleSnakes: function(){
+    this.game.snakes.purple = true;
+  },
+  blackSnakes: function(){
+    this.game.snake.black = true;
   },
 
   walking: function(human, floor) {
@@ -1699,16 +1705,15 @@ Play.prototype = {
     //console.log(human.body.touching.down+","+enemy.body.touching.up);
     if(human.body.touching.down && enemy.body.touching.up ){
 
-      console.log(human.jumpsLeft);
         human.body.velocity.y = - 200;
+        enemy.kill();
         if(enemy instanceof SkyEnemy){
             new ScoreText(this.game ,human.position.x, human.position.y,"10");
-            human.jumpsLeft = human.jumpsLeft++;
+            human.jumpsLeft = human.jumpsLeft+1;
             this.updateScore(10);
         }else{
             new ScoreText(this.game ,human.position.x, human.position.y,"5");
-            console.log(enemy);
-            enemy.onKilled();
+            human.jumpsLeft = human.jumpsLeft;
             this.updateScore(5);
         }
         if(!this.game.soundMuted){this.scoreSound.play();}
@@ -1869,6 +1874,8 @@ Preload.prototype = {
     this.asset = this.add.sprite(this.width/2,this.height/2, 'preloader');
     this.asset.anchor.setTo(0.5, 0.5);
     this.game.load.script('plasma', 'assets/filters/Plasma.js');
+    
+    this.game.snakes = {};
 
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     this.load.setPreloadSprite(this.asset);
@@ -1907,7 +1914,7 @@ Preload.prototype = {
     this.load.spritesheet('characterSpriteSheet', 'assets/chars/characterSpriteSheetFinal.png', 32,32,30);
 
 
-    this.load.spritesheet('enemy', 'assets/chars/medusa.png', 32,32,6);
+    this.load.spritesheet('enemy', 'assets/chars/medusa_2.png', 32,32,6);
     //this.load.spritesheet('skyEnemy', 'assets/enemySky.png', 34,24,3);
     this.load.spritesheet('skyEnemy', 'assets/chars/snakes.png', 31+1/3,20,12);
 

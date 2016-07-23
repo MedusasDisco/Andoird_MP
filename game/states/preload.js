@@ -10,6 +10,8 @@ Preload.prototype = {
     this.asset = this.add.sprite(this.width/2,this.height/2, 'preloader');
     this.asset.anchor.setTo(0.5, 0.5);
     this.game.load.script('plasma', 'assets/filters/Plasma.js');
+    
+    this.game.snakes = {};
 
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     this.load.setPreloadSprite(this.asset);
@@ -48,7 +50,7 @@ Preload.prototype = {
     this.load.spritesheet('characterSpriteSheet', 'assets/chars/characterSpriteSheetFinal.png', 32,32,30);
 
 
-    this.load.spritesheet('enemy', 'assets/chars/medusa.png', 32,32,6);
+    this.load.spritesheet('enemy', 'assets/chars/medusa_2.png', 32,32,6);
     //this.load.spritesheet('skyEnemy', 'assets/enemySky.png', 34,24,3);
     this.load.spritesheet('skyEnemy', 'assets/chars/snakes.png', 31+1/3,20,12);
 
