@@ -19,7 +19,6 @@ var Mountains_2 = require('../prefabs/mountains_2');
 var Fog = require('../prefabs/fog');
 var HealthBar = require('../prefabs/HealthBar');
 var ScoreText = require('../prefabs/scoreText');
-var soundMuted = localStorage.getItem('soundMuted') || false;
 
 function Play() {
 }
@@ -29,6 +28,7 @@ Play.prototype = {
     if (!localStorage.getItem('soundMuted')) {
         localStorage.setItem('soundMuted',false);
     }
+
     // start the phaser arcade physics engine
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -248,8 +248,8 @@ Play.prototype = {
 
         // Set time for Enemies to start jumping
         this.game.time.events.add(Phaser.Timer.SECOND * 45, this.jumpEnemies, this);
-        this.game.time.events.add(Phaser.Timer.SECOND * 60, this.purpleSnakes, this);
-        this.game.time.events.add(Phaser.Timer.SECOND * 120, this.blackSnakes, this);
+        //this.game.time.events.add(Phaser.Timer.SECOND * 10, this.purpleSnakes, this);
+        //this.game.time.events.add(Phaser.Timer.SECOND * 15, this.blackSnakes, this);
 
         this.enemyGenerator.timer.start();
         this.skyEnemyGenerator.timer.start();
@@ -257,10 +257,8 @@ Play.prototype = {
         this.platformGenerator.timer.start();
         this.instructionGroup.destroy();
 
-
         this.game.time.events.loop(Phaser.Timer.SECOND * 10, this.increaseDifficulty, this);
         this.game.time.events.loop(Phaser.Timer.SECOND * 1, this.timerHandler, this);
-
 
     }
   },
@@ -282,8 +280,13 @@ Play.prototype = {
 
     soundMuted = !soundMuted;
 
-    soundMuted ?  this.soundButtonoState = 'soundOff': this.soundButtonoState = 'soundOn';
-
+    if (soundMuted){
+        this.game.soundTrack.stop();
+        this.soundButtonoState = 'soundOff'
+    } else {
+        this.game.soundTrack.play();
+        this.soundButtonoState = 'soundOn';
+    }
     this.game.soundMuted = soundMuted;
 
     this.soundButton = this.game.add.button(this.game.width/2, this.game.height - 50, this.soundButtonoState, this.toggleAudio, this);
@@ -303,7 +306,7 @@ Play.prototype = {
     this.game.snakes.purple = true;
   },
   blackSnakes: function(){
-    this.game.snake.black = true;
+    this.game.snakes.black = true;
   },
 
   walking: function(human, floor) {
@@ -322,7 +325,7 @@ Play.prototype = {
           enemy.body.velocity.x= -200;
       }
       else {
-          console.log('dead');
+        //  console.log('dead');
           enemy.body.collideWorldBounds = false;
           enemy.body.velocity.y= 100;
       }
@@ -380,6 +383,7 @@ Play.prototype = {
     if((enemy instanceof SkyEnemy || enemy instanceof Enemy) && this.human.alive) {
         if(human.invincible){return enemy.kill();}
         this.scoreboard = new Scoreboard(this.game);
+        //this.submitScore(this.score);
         this.game.add.existing(this.scoreboard);
         this.scoreboard.show(this.score);
         this.human.onGround = true;
@@ -487,9 +491,6 @@ Play.prototype = {
 
     skyEnemyGroup.reset(this.game.width, skyEnemyY);
 
-
-  },
-  submitScore: function (score) {
 
   },
   increaseDifficulty: function (){

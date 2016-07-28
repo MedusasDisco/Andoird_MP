@@ -10,7 +10,7 @@ Preload.prototype = {
     this.asset = this.add.sprite(this.width/2,this.height/2, 'preloader');
     this.asset.anchor.setTo(0.5, 0.5);
     this.game.load.script('plasma', 'assets/filters/Plasma.js');
-    
+
     this.game.snakes = {};
 
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
@@ -41,6 +41,8 @@ Preload.prototype = {
 
 
     // CharSelect assets
+    this.load.image('gplayBtn', 'assets/menuImages/gplayBtn.png');
+    this.load.image('leaderBoardBtn', 'assets/menuImages/leaderBoardBtn.png');
     this.load.image('robinBtn', 'assets/chars/charButton_RobinBtn.png');
     this.load.image('wyntonBtn', 'assets/chars/charButton_WyntonBtn.png');
     this.load.image('hunterBtn', 'assets/chars/charButton_HunterBtn.png');

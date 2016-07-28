@@ -4,6 +4,7 @@
 
 var BootState = require('./states/boot');
 var CharSelectState = require('./states/charSelect');
+var LeaderBoardState = require('./states/leaderBoard');
 var MenuState = require('./states/menu');
 var PlayState = require('./states/play');
 var PreloadState = require('./states/preload');
@@ -13,6 +14,7 @@ var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '
 // Game States
 game.state.add('boot', BootState);
 game.state.add('charSelect', CharSelectState);
+game.state.add('leaderBoard', LeaderBoardState);
 game.state.add('menu', MenuState);
 game.state.add('play', PlayState);
 game.state.add('preload', PreloadState);
@@ -20,7 +22,7 @@ game.state.add('preload', PreloadState);
 
 game.state.start('boot');
 
-},{"./states/boot":21,"./states/charSelect":22,"./states/menu":23,"./states/play":24,"./states/preload":25}],2:[function(require,module,exports){
+},{"./states/boot":21,"./states/charSelect":22,"./states/leaderBoard":23,"./states/menu":24,"./states/play":25,"./states/preload":26}],2:[function(require,module,exports){
 /**
  Copyright (c) 2015 Belahcen Marwane (b.marwane@gmail.com)
 
@@ -843,6 +845,11 @@ var Scoreboard = function(game) {
   this.add(this.bestText);
 
   // add our start button with a callback
+  this.leaderBoardButton = this.game.add.button(this.game.width/2 - 5, 360, 'leaderBoardBtn', this.gplayClick, this);
+  this.leaderBoardButton.anchor.setTo(0.5,0.5);
+  this.add(this.leaderBoardButton);
+
+  // add our start button with a callback
   this.startButton = this.game.add.button(this.game.width/2 + 60, 300, 'startButton', this.startClick, this);
   this.startButton.anchor.setTo(0.5,0.5);
   this.add(this.startButton);
@@ -877,6 +884,7 @@ Scoreboard.prototype.setupSpacebar = function () {
 
 
 Scoreboard.prototype.show = function(score) {
+    this.score = score;
     var coin, bestScore, playerId;
     this.scoreText.setText(score.toString());
 
@@ -900,6 +908,12 @@ Scoreboard.prototype.show = function(score) {
 
     this.bestText.setText(bestScore.toString());
     this.game.add.tween(this).to({x:0}, 1000, Phaser.Easing.Elastic.InOut, true);
+};
+
+Scoreboard.prototype.gplayClick = function() {
+    toggleGplayScreen(this.score);
+  // window.game.submitScore(leaderboardId, score);
+  // window.game.showLeaderboard(leaderboardId);
 };
 
 Scoreboard.prototype.startClick = function() {
@@ -932,7 +946,7 @@ var SkyEnemy = function(game, x, y, frame) {
   this.animations.add('blackSnake', [9,10,11,10] );
   this.animations.play('greenSnake', 12, true);
 
-  this.snakeArray= [0,0,0,0,0,1,1,2,2,1]
+  this.snakeArray= [0,0,0]
 
   this.flapSound = this.game.add.audio('flap');
 
@@ -983,16 +997,13 @@ SkyEnemy.prototype.flap = function() {
     //this.game.add.tween(this).to({angle: 10}, 100).start();
   }
 
-
+  
 
 };
 
 SkyEnemy.prototype.revived = function() {
-  if(this.game.snakes.purple){
-      var snakeType = Math.floor(Math.random()*20);
-      
-      this.animations.play('purpleSnake', 12, true);
-  }
+  var snakeType = Math.floor(Math.random()*20);
+  this.animations.play('greenSnake', 12, true);
 };
 
 SkyEnemy.prototype.onKilled = function() {
@@ -1190,6 +1201,15 @@ CharSel.prototype = {
     this.robinButton.anchor.setTo(0.5,0.5);
 
 
+    this.gplayBG = this.game.add.graphics(50,50);
+    this.gplayBG.lineStyle(2, 0xFFFFFF, 1);
+    this.gplayBG.beginFill(0x1f1544, 1);
+    this.gplayBG.drawRect( this.background.menuWidth, (this.game.height/100)+ 275, 250, 50);
+
+    this.gplayBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 350, 'gplayBtn', this.gplayClick, this);
+    this.gplayBtn.anchor.setTo(0.5,0.5);
+
+
 
     // this.startButton = this.game.add.button(this.game.width/2, this.game.height - 50, 'startButton', this.charClick, this);
     // this.startButton.anchor.setTo(0.5,0.5);
@@ -1228,12 +1248,108 @@ CharSel.prototype = {
     this.game.velocityY = -420;
     this.game.scoreLabel = 0x706FF4;
     this.game.state.start('play');
+  },
+  gplayClick: function() {
+    window.game.login();
   }
 };
 
 module.exports = CharSel;
 
 },{"../prefabs/fog":5,"../prefabs/mountains":10,"../prefabs/mountains_2":11,"../prefabs/snowHill":20}],23:[function(require,module,exports){
+
+'use strict';
+var Mountains = require('../prefabs/mountains');
+var Mountains_2 = require('../prefabs/mountains_2');
+var SnowHill = require('../prefabs/snowHill');
+var Fog = require('../prefabs/fog');
+function LeaderBoard() {}
+
+LeaderBoard.prototype = {
+  preload: function() {
+
+  },
+  create: function() {
+
+    this.background = this.game.add.tileSprite(0,0, this.game.width, this.game.height, 'background');
+    this.background.autoScroll(-2.5,-5);
+    this.background.menuWidth = (this.game.width / 2) - 180;
+
+    this.fog = new Fog(this.game, 0,this.game.backgroundPos.fog, this.game.width, 146);
+    this.fog2 = new Fog(this.game, 0,this.game.backgroundPos.fog2, this.game.width, 146);
+    this.fog3 = new Fog(this.game, 0,this.game.backgroundPos.fog3, this.game.width, 146);
+    this.game.add.existing(this.fog);
+
+    this.mountains2 = new Mountains_2(this.game, 0, this.game.backgroundPos.mountains2, this.game.width, 146);
+    this.game.add.existing(this.mountains2);
+
+    this.game.add.existing(this.fog2);
+
+    this.mountains = new Mountains(this.game, 0, this.game.backgroundPos.mountains, this.game.width, 130);
+    this.game.add.existing(this.mountains);
+
+    this.game.add.existing(this.fog3);
+
+    // add the ground sprite as a tile
+    // and start scrolling in the negative x direction
+    this.ground = this.game.add.tileSprite(0,this.game.backgroundPos.ground, this.game.width,112,'ground');
+    this.ground.autoScroll(-200,0);
+
+    // this.menuBG = this.game.add.graphics(50,50);
+    // this.menuBG.lineStyle(2, 0xFFFFFF, 1);
+    // this.menuBG.beginFill(0x1f1544, 1);
+    // this.menuBG.drawRect( this.background.menuWidth, this.game.height/100, 250, 250);
+
+
+    this.charSelText = this.game.add.bitmapText( (this.game.width/2) - 105 ,70 , 'mainFont',"Select Your Character", 20);
+
+
+
+    /** STEP 1 **/
+    // create a group to put the title assets in
+    // so they can be manipulated as a whole
+    this.titleGroup = this.game.add.group()
+
+    /** STEP 2 **/
+    // create the title sprite
+    // and add it to the group
+    this.title = this.add.sprite(0,0,'characterSelectSheet');
+    this.titleGroup.add(this.title);
+
+
+    /** STEP 5 **/
+    // Set the originating location of the group
+    this.titleGroup.x = (this.game.width / 2) - 110;
+    this.titleGroup.y = 100;
+
+    /** STEP 6 **/
+    //  create an oscillating animation tween for the group
+    this.game.add.tween(this.titleGroup).to({y:115}, 750, Phaser.Easing.Linear.NONE, true, 0, 2000, true);
+
+    // add our start button with a callback
+
+    this.gplayBG = this.game.add.graphics(50,50);
+    this.gplayBG.lineStyle(2, 0xFFFFFF, 1);
+    this.gplayBG.beginFill(0x1f1544, 1);
+    this.gplayBG.drawRect( this.background.menuWidth, (this.game.height/100)+ 275, 250, 50);
+
+    this.gplayBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 350, 'gplayBtn', this.gplayClick, this);
+    this.gplayBtn.anchor.setTo(0.5,0.5);
+
+
+
+    // this.startButton = this.game.add.button(this.game.width/2, this.game.height - 50, 'startButton', this.charClick, this);
+    // this.startButton.anchor.setTo(0.5,0.5);
+  },
+  gplayClick: function() {
+    window.game.submitScore(leaderboardId, score);
+    window.game.showLeaderboard(leaderboardId);
+  }
+};
+
+module.exports = LeaderBoard;
+
+},{"../prefabs/fog":5,"../prefabs/mountains":10,"../prefabs/mountains_2":11,"../prefabs/snowHill":20}],24:[function(require,module,exports){
 'use strict';
 
 var Mountains = require('../prefabs/mountains');
@@ -1340,7 +1456,7 @@ Menu.prototype = {
 
 module.exports = Menu;
 
-},{"../prefabs/fog":5,"../prefabs/mountains":10,"../prefabs/mountains_2":11,"../prefabs/snowHill":20}],24:[function(require,module,exports){
+},{"../prefabs/fog":5,"../prefabs/mountains":10,"../prefabs/mountains_2":11,"../prefabs/snowHill":20}],25:[function(require,module,exports){
 'use strict';
 //var Bird = require('../prefabs/bird');
 var Human = require('../prefabs/human');
@@ -1362,7 +1478,6 @@ var Mountains_2 = require('../prefabs/mountains_2');
 var Fog = require('../prefabs/fog');
 var HealthBar = require('../prefabs/HealthBar');
 var ScoreText = require('../prefabs/scoreText');
-var soundMuted = localStorage.getItem('soundMuted') || false;
 
 function Play() {
 }
@@ -1372,6 +1487,7 @@ Play.prototype = {
     if (!localStorage.getItem('soundMuted')) {
         localStorage.setItem('soundMuted',false);
     }
+
     // start the phaser arcade physics engine
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -1591,8 +1707,8 @@ Play.prototype = {
 
         // Set time for Enemies to start jumping
         this.game.time.events.add(Phaser.Timer.SECOND * 45, this.jumpEnemies, this);
-        this.game.time.events.add(Phaser.Timer.SECOND * 60, this.purpleSnakes, this);
-        this.game.time.events.add(Phaser.Timer.SECOND * 120, this.blackSnakes, this);
+        //this.game.time.events.add(Phaser.Timer.SECOND * 10, this.purpleSnakes, this);
+        //this.game.time.events.add(Phaser.Timer.SECOND * 15, this.blackSnakes, this);
 
         this.enemyGenerator.timer.start();
         this.skyEnemyGenerator.timer.start();
@@ -1600,10 +1716,8 @@ Play.prototype = {
         this.platformGenerator.timer.start();
         this.instructionGroup.destroy();
 
-
         this.game.time.events.loop(Phaser.Timer.SECOND * 10, this.increaseDifficulty, this);
         this.game.time.events.loop(Phaser.Timer.SECOND * 1, this.timerHandler, this);
-
 
     }
   },
@@ -1625,8 +1739,13 @@ Play.prototype = {
 
     soundMuted = !soundMuted;
 
-    soundMuted ?  this.soundButtonoState = 'soundOff': this.soundButtonoState = 'soundOn';
-
+    if (soundMuted){
+        this.game.soundTrack.stop();
+        this.soundButtonoState = 'soundOff'
+    } else {
+        this.game.soundTrack.play();
+        this.soundButtonoState = 'soundOn';
+    }
     this.game.soundMuted = soundMuted;
 
     this.soundButton = this.game.add.button(this.game.width/2, this.game.height - 50, this.soundButtonoState, this.toggleAudio, this);
@@ -1646,7 +1765,7 @@ Play.prototype = {
     this.game.snakes.purple = true;
   },
   blackSnakes: function(){
-    this.game.snake.black = true;
+    this.game.snakes.black = true;
   },
 
   walking: function(human, floor) {
@@ -1665,7 +1784,7 @@ Play.prototype = {
           enemy.body.velocity.x= -200;
       }
       else {
-          console.log('dead');
+        //  console.log('dead');
           enemy.body.collideWorldBounds = false;
           enemy.body.velocity.y= 100;
       }
@@ -1723,6 +1842,7 @@ Play.prototype = {
     if((enemy instanceof SkyEnemy || enemy instanceof Enemy) && this.human.alive) {
         if(human.invincible){return enemy.kill();}
         this.scoreboard = new Scoreboard(this.game);
+        //this.submitScore(this.score);
         this.game.add.existing(this.scoreboard);
         this.scoreboard.show(this.score);
         this.human.onGround = true;
@@ -1832,9 +1952,6 @@ Play.prototype = {
 
 
   },
-  submitScore: function (score) {
-
-  },
   increaseDifficulty: function (){
 
     if(this.game.enemyGeneratorRangeLow>1){
@@ -1861,7 +1978,7 @@ Play.prototype = {
 
 module.exports = Play;
 
-},{"../prefabs/HealthBar":2,"../prefabs/enemy":3,"../prefabs/enemyGroup":4,"../prefabs/fog":5,"../prefabs/ground":6,"../prefabs/human":7,"../prefabs/medal":8,"../prefabs/medalGroup":9,"../prefabs/mountains":10,"../prefabs/mountains_2":11,"../prefabs/pipe":12,"../prefabs/pipeGroup":13,"../prefabs/platform":14,"../prefabs/platformGroup":15,"../prefabs/scoreText":16,"../prefabs/scoreboard":17,"../prefabs/skyEnemy":18,"../prefabs/skyEnemyGroup":19}],25:[function(require,module,exports){
+},{"../prefabs/HealthBar":2,"../prefabs/enemy":3,"../prefabs/enemyGroup":4,"../prefabs/fog":5,"../prefabs/ground":6,"../prefabs/human":7,"../prefabs/medal":8,"../prefabs/medalGroup":9,"../prefabs/mountains":10,"../prefabs/mountains_2":11,"../prefabs/pipe":12,"../prefabs/pipeGroup":13,"../prefabs/platform":14,"../prefabs/platformGroup":15,"../prefabs/scoreText":16,"../prefabs/scoreboard":17,"../prefabs/skyEnemy":18,"../prefabs/skyEnemyGroup":19}],26:[function(require,module,exports){
 
 'use strict';
 function Preload() {
@@ -1874,7 +1991,7 @@ Preload.prototype = {
     this.asset = this.add.sprite(this.width/2,this.height/2, 'preloader');
     this.asset.anchor.setTo(0.5, 0.5);
     this.game.load.script('plasma', 'assets/filters/Plasma.js');
-    
+
     this.game.snakes = {};
 
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
@@ -1905,6 +2022,8 @@ Preload.prototype = {
 
 
     // CharSelect assets
+    this.load.image('gplayBtn', 'assets/menuImages/gplayBtn.png');
+    this.load.image('leaderBoardBtn', 'assets/menuImages/leaderBoardBtn.png');
     this.load.image('robinBtn', 'assets/chars/charButton_RobinBtn.png');
     this.load.image('wyntonBtn', 'assets/chars/charButton_WyntonBtn.png');
     this.load.image('hunterBtn', 'assets/chars/charButton_HunterBtn.png');

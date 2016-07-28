@@ -11,20 +11,105 @@
   <script type="text/javascript" src="js/index.js"></script>
   <script type="text/javascript"  src="js/phaser.js"></script>
   <script type="text/javascript"  src="js/game.js"></script>
+
+  <style>
+  #googlePlayScreen {
+      background: url("assets/background/spaceBG_2.png");
+      transition: opacity 1s ease;
+      position: absolute;
+      opacity: 0;
+      z-index: -1;
+      top: 0px;
+      bottom: 0px;
+      left: 0px;
+      right: 0px;
+  }
+
+  .content {
+      width: 300px;
+      margin: 0 auto;
+      height: 400px;
+      background: white;
+      top:40px;
+  }
+
+  </style>
+
   <script type="text/javascript">
+
   var leaderboardId = "CgkIg62_ic4ZEAIQAg";
+
   var achievementId1 = "CgkIg62_ic4ZEAIQAA";
+  var achievementId2 = "CgkIg62_ic4ZEAIQAA";
+  var achievementId3 = "CgkIg62_ic4ZEAIQAA";
+  var achievementId4 = "CgkIg62_ic4ZEAIQAA";
+  var achievementId5 = "CgkIg62_ic4ZEAIQAA";
+
+  var userName = '';
+
+  var soundMuted = localStorage.getItem('soundMuted') || false;
+
+  var soundTrack = {play:function(){}}//new Media("/android_asset/www/assets/sound/notACare.mp3");
+
+  var gPlayActive = false;
+  var $ = function(q) {return document.getElementById(q)}
+  function toggleGplayScreen(score) {
+      window.game.submitScore(leaderboardId, score);
+      window.game.showLeaderboard(leaderboardId);
+
+      // switch(score) {
+      //     case 100:
+      //         window.game.unlockAchievement(achievementId1);
+      //     case 200:
+      //         window.game.unlockAchievement(achievementId2);
+      //     case 250:
+      //         window.game.unlockAchievement(achievementId3);
+      //     case 350:
+      //         window.game.unlockAchievement(achievementId4);
+      //     case 500:
+      //         window.game.unlockAchievement(achievementId5);
+      //     break;
+      // }
+      // if(gPlayActive) {
+      //     $('googlePlayScreen').style.opacity = 0;
+      //     setTimeout(function() {
+      //         $('googlePlayScreen').style.zIndex = -1;
+      //     }, 1000);
+      // }
+      // else {
+      //   //window.game.submitScore(leaderboardId, score);
+      //   $('googlePlayScreen').style.opacity = 1;
+      //   $('googlePlayScreen').style.zIndex = 1;
+      //   // setTimeout(function() {
+      //   //     $('googlePlayScreen').style.zIndex = 1;
+      //   // }, 1000);
+      // }
+  }
+
   document.addEventListener("deviceready", function(){
   window.game.setUp();
 
   //callback
   window.game.onLoginSucceeded = function(result) {
       var playerDetail = result;
+      userName = playerDetail['playerDisplayName'];
       alert('onLoginSucceeded: ' + playerDetail['playerId'] + ' ' + playerDetail['playerDisplayName']);
   };
-  window.game.onLoginFailed = function() {
-      alert('onLoginFailed');
+  window.game.onLoginFailed = function(res) {
+      alert(res);
+      alert('Failed');
   };
+
+  setTimeout(function(){
+      var options = {
+          numberOfLoops: 2,
+          playAudioWhenScreenIsLocked: false
+      }
+      if(!soundMuted){
+          soundTrack.play(options);
+      }
+  }, 1000);
+
   //
   window.game.onSubmitScoreSucceeded = function() {
       alert('onSubmitScoreSucceeded');
@@ -73,23 +158,23 @@
 </head>
 <body >
 <div id="gameContainer">
-<center><div style="width:100%;height:80%;position:absolute;margin:-8px;" id="medusas-pixel"></div></center>
-<div style="position:absolute;width:100%;padding:15px;top:80%;height:20%;">
-<button onclick="window.game.login();">login</button>
-<button onclick="window.game.logout();">logout</button>
-<button onclick="alert(window.game.isLoggedIn());">isLoggedIn</button>
-<br>
-<button onclick="window.game.submitScore(leaderboardId, 5);//leaderboardId, score">submitScore</button>
-<button onclick="window.game.showLeaderboard(leaderboardId);">showLeaderboard</button>
-<button onclick="window.game.showLeaderboards();">showLeaderboards</button>
-<button onclick="window.game.getPlayerScore(leaderboardId);">getPlayerScore</button>
-<br>
-<button onclick="window.game.unlockAchievement(achievementId1);">unlockAchievement1</button>
-<button onclick="window.game.incrementAchievement(achievementId1, 2); //achievementId, incrementalStepOrCurrentPercent: Incremental step (android) or current percent (ios) for incremental achievement.">incrementAchievement1</button></p>
+<center>  <div style="width:100%;height:100%;position:absolute;margin:-8px;" id="medusas-pixel"></div></center>
+</div>
+<div id="googlePlayScreen">
+    <div class="content">
+        <button onclick="window.game.login();">login</button>
+        <button onclick="window.game.logout();">logout</button>
+        <button onclick="alert(window.game.isLoggedIn());">isLoggedIn</button>
+        <br>
+        <button onclick="window.game.showLeaderboard(leaderboardId);">showLeaderboard</button>
+        <br>
+        <button onclick="window.game.unlockAchievement(achievementId1);">unlockAchievement1</button>
+        <button onclick="window.game.incrementAchievement(achievementId1, 2); //achievementId, incrementalStepOrCurrentPercent: Incremental step (android) or current percent (ios) for incremental achievement.">incrementAchievement1</button></p>
 
-<button onclick="window.game.showAchievements();">showAchievements</button>
-<button onclick="window.game.resetAchievements();">resetAchievements</button>
-<button onclick="window.game.getPlayerImage();">getPlayerImage</button>
+        <button onclick="window.game.showAchievements();">showAchievements</button>
+        <button onclick="window.game.resetAchievements();">resetAchievements</button>
+        <button onclick="window.game.getPlayerImage();">getPlayerImage</button>
+    </div>
 </div>
 
 </body>

@@ -23,6 +23,11 @@ var Scoreboard = function(game) {
   this.add(this.bestText);
 
   // add our start button with a callback
+  this.leaderBoardButton = this.game.add.button(this.game.width/2 - 5, 360, 'leaderBoardBtn', this.gplayClick, this);
+  this.leaderBoardButton.anchor.setTo(0.5,0.5);
+  this.add(this.leaderBoardButton);
+
+  // add our start button with a callback
   this.startButton = this.game.add.button(this.game.width/2 + 60, 300, 'startButton', this.startClick, this);
   this.startButton.anchor.setTo(0.5,0.5);
   this.add(this.startButton);
@@ -57,6 +62,7 @@ Scoreboard.prototype.setupSpacebar = function () {
 
 
 Scoreboard.prototype.show = function(score) {
+    this.score = score;
     var coin, bestScore, playerId;
     this.scoreText.setText(score.toString());
 
@@ -80,6 +86,12 @@ Scoreboard.prototype.show = function(score) {
 
     this.bestText.setText(bestScore.toString());
     this.game.add.tween(this).to({x:0}, 1000, Phaser.Easing.Elastic.InOut, true);
+};
+
+Scoreboard.prototype.gplayClick = function() {
+    toggleGplayScreen(this.score);
+  // window.game.submitScore(leaderboardId, score);
+  // window.game.showLeaderboard(leaderboardId);
 };
 
 Scoreboard.prototype.startClick = function() {

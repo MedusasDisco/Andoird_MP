@@ -9,7 +9,7 @@ var SkyEnemy = function(game, x, y, frame) {
   this.animations.add('blackSnake', [9,10,11,10] );
   this.animations.play('greenSnake', 12, true);
 
-  this.snakeArray= [0,0,0,0,0,1,1,2,2,1]
+  this.snakeArray= [0,0,0]
 
   this.flapSound = this.game.add.audio('flap');
 
@@ -60,16 +60,13 @@ SkyEnemy.prototype.flap = function() {
     //this.game.add.tween(this).to({angle: 10}, 100).start();
   }
 
-
+  
 
 };
 
 SkyEnemy.prototype.revived = function() {
-  if(this.game.snakes.purple){
-      var snakeType = Math.floor(Math.random()*20);
-      
-      this.animations.play('purpleSnake', 12, true);
-  }
+  var snakeType = Math.floor(Math.random()*20);
+  this.animations.play('greenSnake', 12, true);
 };
 
 SkyEnemy.prototype.onKilled = function() {
