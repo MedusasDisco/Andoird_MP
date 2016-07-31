@@ -444,8 +444,8 @@ Human.prototype.onKilled = function() {
   this.animations.stop();
   var duration = 90 / this.y * 300;
   this.game.add.tween(this).to({angle: 90}, duration).start();
-  console.log('killed');
-  console.log('alive:', this.alive);
+  // console.log('killed');
+  // console.log('alive:', this.alive);
 };
 
 module.exports = Human;
@@ -475,7 +475,7 @@ var Medal = function(game, x, y, frame) {
   this.body.setSize(30,30);
 
   this.events.onKilled.add(this.onKilled, this);
-  
+
 };
 
 Medal.prototype = Object.create(Phaser.Sprite.prototype);
@@ -486,26 +486,25 @@ Medal.prototype.update = function() {
   // if it is rotate the Medal towards the ground by 2.5 degrees
   // if(this.angle < 90 && this.alive) {
   //   this.angle += 2.5;
-  // } 
+  // }
 
   // if(!this.alive) {
   //   this.body.velocity.x = 0;
   // }
 };
 
-Medal.prototype.revived = function() { 
+Medal.prototype.revived = function() {
 };
 
 Medal.prototype.onKilled = function() {
   this.exists = false;
   this.visible = false;
   this.animations.stop();
-  console.log('killed');
-  console.log('alive:', this.alive);
+  // console.log('killed');
+  // console.log('alive:', this.alive);
 };
 
 module.exports = Medal;
-
 
 },{}],9:[function(require,module,exports){
 'use strict';
@@ -731,13 +730,13 @@ PlatformGroup.prototype = Object.create(Phaser.Group.prototype);
 PlatformGroup.prototype.constructor = PlatformGroup;
 
 PlatformGroup.prototype.update = function() {
-  this.checkWorldBounds(); 
+  this.checkWorldBounds();
 };
 
 PlatformGroup.prototype.generatePlatformType = function() {
-  
+
   var rndNum = Math.floor(Math.random()*10);
-  console.log(rndNum);
+  //console.log(rndNum);
   if(rndNum<=3){
     this.bottomPlatform.kill(0)
   }
@@ -845,7 +844,8 @@ var Scoreboard = function(game) {
   this.add(this.bestText);
 
   // add our start button with a callback
-  this.leaderBoardButton = this.game.add.button(this.game.width/2 - 5, 360, 'leaderBoardBtn', this.gplayClick, this);
+
+  this.leaderBoardButton = this.game.add.button(this.game.width/2 - 5, 360, 'leaderboardBtn', this.gplayClick, this);
   this.leaderBoardButton.anchor.setTo(0.5,0.5);
   this.add(this.leaderBoardButton);
 
@@ -876,7 +876,6 @@ Scoreboard.prototype = Object.create(Phaser.Group.prototype);
 Scoreboard.prototype.constructor = Scoreboard;
 
 Scoreboard.prototype.setupSpacebar = function () {
-  console.log("hit");
   this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
   this.spacebar.onDown.addOnce(this.startClick, this);
 
@@ -890,17 +889,17 @@ Scoreboard.prototype.show = function(score) {
 
     if(!!localStorage) {
         bestScore = localStorage.getItem('bestScore');
-        playerId = localStorage.getItem('playerId');
+        //playerId = localStorage.getItem('playerId');
 
         if(!bestScore || bestScore < score) {
             bestScore = score;
-            localStorage.setItem('bestScore', bestScore);
+            //localStorage.setItem('bestScore', bestScore);
         }
         if(!playerId) {
-            playerId = Math.floor(Math.random()*99999999);
-            localStorage.setItem('playerId', playerId);
+            //playerId = Math.floor(Math.random()*99999999);
+            //localStorage.setItem('playerId', playerId);
         }
-        console.log(playerId);
+      //  console.log(playerId);
     }
     else {
         bestScore = 'N/A';
@@ -912,7 +911,7 @@ Scoreboard.prototype.show = function(score) {
 
 Scoreboard.prototype.gplayClick = function() {
     toggleGplayScreen(this.score);
-  // window.game.submitScore(leaderboardId, score);
+    window.game.submitScore(leaderboardId, this.score);
   // window.game.showLeaderboard(leaderboardId);
 };
 
@@ -923,10 +922,6 @@ Scoreboard.prototype.startClick = function() {
 Scoreboard.prototype.goToCharSel = function() {
   this.game.state.start('charSelect');
 };
-
-
-
-
 
 Scoreboard.prototype.update = function() {
   // write your prefab's specific update code here
@@ -1201,14 +1196,16 @@ CharSel.prototype = {
     this.robinButton.anchor.setTo(0.5,0.5);
 
 
-    this.gplayBG = this.game.add.graphics(50,50);
-    this.gplayBG.lineStyle(2, 0xFFFFFF, 1);
-    this.gplayBG.beginFill(0x1f1544, 1);
-    this.gplayBG.drawRect( this.background.menuWidth, (this.game.height/100)+ 275, 250, 50);
+    this.musicBtnBG = this.game.add.graphics(50,50);
+    this.musicBtnBG.lineStyle(2, 0xFFFFFF, 1);
+    this.musicBtnBG.beginFill(0x1f1544, 1);
+    this.musicBtnBG.drawRect( this.background.menuWidth, (this.game.height/100)+ 275, 250, 80);
 
-    this.gplayBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 350, 'gplayBtn', this.gplayClick, this);
-    this.gplayBtn.anchor.setTo(0.5,0.5);
+    this.musicOffBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 350, 'musicOff', this.musicOff, this);
+    this.musicOffBtn.anchor.setTo(0.5,0.5);
 
+    this.musicOnBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 380, 'musicOn', this.musicOn, this);
+    this.musicOnBtn.anchor.setTo(0.5,0.5);
 
 
     // this.startButton = this.game.add.button(this.game.width/2, this.game.height - 50, 'startButton', this.charClick, this);
@@ -1249,9 +1246,15 @@ CharSel.prototype = {
     this.game.scoreLabel = 0x706FF4;
     this.game.state.start('play');
   },
-  gplayClick: function() {
-    window.game.login();
-  }
+  musicOn: function() {
+    isMusicPLaying = true;
+    soundTrack.stop();
+    soundTrack.play(musicOptions);
+  },
+  musicOff: function() {
+    isMusicPLaying = false;
+    soundTrack.stop();
+  },
 };
 
 module.exports = CharSel;
@@ -1740,10 +1743,10 @@ Play.prototype = {
     soundMuted = !soundMuted;
 
     if (soundMuted){
-        this.game.soundTrack.stop();
+        //this.game.soundTrack.stop();
         this.soundButtonoState = 'soundOff'
     } else {
-        this.game.soundTrack.play();
+        //this.game.soundTrack.play();
         this.soundButtonoState = 'soundOn';
     }
     this.game.soundMuted = soundMuted;
@@ -2014,6 +2017,8 @@ Preload.prototype = {
     // charSelect.js assets
     this.load.image('instructions', 'assets/menuImages/instructions_v2.png');
     this.load.image('getReady', 'assets/menuImages/get-ready_2.png');
+    this.load.image('musicOn', 'assets/menuImages/musicOnBtn.png');
+    this.load.image('musicOff', 'assets/menuImages/musicOffBtn.png');
     this.load.image('back', 'assets/menuImages/back_v2.png');
 
     this.load.image('scoreboard', 'assets/menuImages/scoreboard_v3.png');
@@ -2023,7 +2028,8 @@ Preload.prototype = {
 
     // CharSelect assets
     this.load.image('gplayBtn', 'assets/menuImages/gplayBtn.png');
-    this.load.image('leaderBoardBtn', 'assets/menuImages/leaderBoardBtn.png');
+    this.load.image('gplayBtnLogout', 'assets/menuImages/gplayBtnLogout.png');
+    this.load.image('leaderboardBtn', 'assets/menuImages/leaderboardBtn.png');
     this.load.image('robinBtn', 'assets/chars/charButton_RobinBtn.png');
     this.load.image('wyntonBtn', 'assets/chars/charButton_WyntonBtn.png');
     this.load.image('hunterBtn', 'assets/chars/charButton_HunterBtn.png');

@@ -23,7 +23,8 @@ var Scoreboard = function(game) {
   this.add(this.bestText);
 
   // add our start button with a callback
-  this.leaderBoardButton = this.game.add.button(this.game.width/2 - 5, 360, 'leaderBoardBtn', this.gplayClick, this);
+
+  this.leaderBoardButton = this.game.add.button(this.game.width/2 - 5, 360, 'leaderboardBtn', this.gplayClick, this);
   this.leaderBoardButton.anchor.setTo(0.5,0.5);
   this.add(this.leaderBoardButton);
 
@@ -54,7 +55,6 @@ Scoreboard.prototype = Object.create(Phaser.Group.prototype);
 Scoreboard.prototype.constructor = Scoreboard;
 
 Scoreboard.prototype.setupSpacebar = function () {
-  console.log("hit");
   this.spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
   this.spacebar.onDown.addOnce(this.startClick, this);
 
@@ -68,17 +68,17 @@ Scoreboard.prototype.show = function(score) {
 
     if(!!localStorage) {
         bestScore = localStorage.getItem('bestScore');
-        playerId = localStorage.getItem('playerId');
+        //playerId = localStorage.getItem('playerId');
 
         if(!bestScore || bestScore < score) {
             bestScore = score;
-            localStorage.setItem('bestScore', bestScore);
+            //localStorage.setItem('bestScore', bestScore);
         }
         if(!playerId) {
-            playerId = Math.floor(Math.random()*99999999);
-            localStorage.setItem('playerId', playerId);
+            //playerId = Math.floor(Math.random()*99999999);
+            //localStorage.setItem('playerId', playerId);
         }
-        console.log(playerId);
+      //  console.log(playerId);
     }
     else {
         bestScore = 'N/A';
@@ -90,7 +90,7 @@ Scoreboard.prototype.show = function(score) {
 
 Scoreboard.prototype.gplayClick = function() {
     toggleGplayScreen(this.score);
-  // window.game.submitScore(leaderboardId, score);
+    window.game.submitScore(leaderboardId, this.score);
   // window.game.showLeaderboard(leaderboardId);
 };
 
@@ -101,10 +101,6 @@ Scoreboard.prototype.startClick = function() {
 Scoreboard.prototype.goToCharSel = function() {
   this.game.state.start('charSelect');
 };
-
-
-
-
 
 Scoreboard.prototype.update = function() {
   // write your prefab's specific update code here

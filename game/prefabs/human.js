@@ -101,8 +101,8 @@ Human.prototype.onKilled = function() {
   this.animations.stop();
   var duration = 90 / this.y * 300;
   this.game.add.tween(this).to({angle: 90}, duration).start();
-  console.log('killed');
-  console.log('alive:', this.alive);
+  // console.log('killed');
+  // console.log('alive:', this.alive);
 };
 
 module.exports = Human;

@@ -18,13 +18,13 @@ PlatformGroup.prototype = Object.create(Phaser.Group.prototype);
 PlatformGroup.prototype.constructor = PlatformGroup;
 
 PlatformGroup.prototype.update = function() {
-  this.checkWorldBounds(); 
+  this.checkWorldBounds();
 };
 
 PlatformGroup.prototype.generatePlatformType = function() {
-  
+
   var rndNum = Math.floor(Math.random()*10);
-  console.log(rndNum);
+  //console.log(rndNum);
   if(rndNum<=3){
     this.bottomPlatform.kill(0)
   }

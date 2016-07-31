@@ -22,7 +22,7 @@ var Medal = function(game, x, y, frame) {
   this.body.setSize(30,30);
 
   this.events.onKilled.add(this.onKilled, this);
-  
+
 };
 
 Medal.prototype = Object.create(Phaser.Sprite.prototype);
@@ -33,23 +33,22 @@ Medal.prototype.update = function() {
   // if it is rotate the Medal towards the ground by 2.5 degrees
   // if(this.angle < 90 && this.alive) {
   //   this.angle += 2.5;
-  // } 
+  // }
 
   // if(!this.alive) {
   //   this.body.velocity.x = 0;
   // }
 };
 
-Medal.prototype.revived = function() { 
+Medal.prototype.revived = function() {
 };
 
 Medal.prototype.onKilled = function() {
   this.exists = false;
   this.visible = false;
   this.animations.stop();
-  console.log('killed');
-  console.log('alive:', this.alive);
+  // console.log('killed');
+  // console.log('alive:', this.alive);
 };
 
 module.exports = Medal;
-

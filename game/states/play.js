@@ -281,10 +281,10 @@ Play.prototype = {
     soundMuted = !soundMuted;
 
     if (soundMuted){
-        this.game.soundTrack.stop();
+        //this.game.soundTrack.stop();
         this.soundButtonoState = 'soundOff'
     } else {
-        this.game.soundTrack.play();
+        //this.game.soundTrack.play();
         this.soundButtonoState = 'soundOn';
     }
     this.game.soundMuted = soundMuted;

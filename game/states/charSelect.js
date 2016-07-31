@@ -89,14 +89,16 @@ CharSel.prototype = {
     this.robinButton.anchor.setTo(0.5,0.5);
 
 
-    this.gplayBG = this.game.add.graphics(50,50);
-    this.gplayBG.lineStyle(2, 0xFFFFFF, 1);
-    this.gplayBG.beginFill(0x1f1544, 1);
-    this.gplayBG.drawRect( this.background.menuWidth, (this.game.height/100)+ 275, 250, 50);
+    this.musicBtnBG = this.game.add.graphics(50,50);
+    this.musicBtnBG.lineStyle(2, 0xFFFFFF, 1);
+    this.musicBtnBG.beginFill(0x1f1544, 1);
+    this.musicBtnBG.drawRect( this.background.menuWidth, (this.game.height/100)+ 275, 250, 80);
 
-    this.gplayBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 350, 'gplayBtn', this.gplayClick, this);
-    this.gplayBtn.anchor.setTo(0.5,0.5);
+    this.musicOffBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 350, 'musicOff', this.musicOff, this);
+    this.musicOffBtn.anchor.setTo(0.5,0.5);
 
+    this.musicOnBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 380, 'musicOn', this.musicOn, this);
+    this.musicOnBtn.anchor.setTo(0.5,0.5);
 
 
     // this.startButton = this.game.add.button(this.game.width/2, this.game.height - 50, 'startButton', this.charClick, this);
@@ -137,9 +139,15 @@ CharSel.prototype = {
     this.game.scoreLabel = 0x706FF4;
     this.game.state.start('play');
   },
-  gplayClick: function() {
-    window.game.login();
-  }
+  musicOn: function() {
+    isMusicPLaying = true;
+    soundTrack.stop();
+    soundTrack.play(musicOptions);
+  },
+  musicOff: function() {
+    isMusicPLaying = false;
+    soundTrack.stop();
+  },
 };
 
 module.exports = CharSel;

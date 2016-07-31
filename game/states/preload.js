@@ -33,6 +33,8 @@ Preload.prototype = {
     // charSelect.js assets
     this.load.image('instructions', 'assets/menuImages/instructions_v2.png');
     this.load.image('getReady', 'assets/menuImages/get-ready_2.png');
+    this.load.image('musicOn', 'assets/menuImages/musicOnBtn.png');
+    this.load.image('musicOff', 'assets/menuImages/musicOffBtn.png');
     this.load.image('back', 'assets/menuImages/back_v2.png');
 
     this.load.image('scoreboard', 'assets/menuImages/scoreboard_v3.png');
@@ -42,7 +44,8 @@ Preload.prototype = {
 
     // CharSelect assets
     this.load.image('gplayBtn', 'assets/menuImages/gplayBtn.png');
-    this.load.image('leaderBoardBtn', 'assets/menuImages/leaderBoardBtn.png');
+    this.load.image('gplayBtnLogout', 'assets/menuImages/gplayBtnLogout.png');
+    this.load.image('leaderboardBtn', 'assets/menuImages/leaderboardBtn.png');
     this.load.image('robinBtn', 'assets/chars/charButton_RobinBtn.png');
     this.load.image('wyntonBtn', 'assets/chars/charButton_WyntonBtn.png');
     this.load.image('hunterBtn', 'assets/chars/charButton_HunterBtn.png');
