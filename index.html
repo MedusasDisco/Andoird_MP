@@ -34,11 +34,11 @@
   }
 
   .backBtn {
-      position: relative;
+      position: absolute;
       height: 58px;
       width: 104px;
       margin: 0 auto;
-      top: 30px;
+      bottom: 30px;
       background: url("assets/menuImages/back_v2.png");
   }
   #logIn {
@@ -86,10 +86,13 @@
   var userName = '';
 
   var soundMuted = localStorage.getItem('soundMuted') || false;
-  var isMusicPLaying = true;
+  var musicPlaying = localStorage.getItem('musicPlaying') || true;
+
+  var isPLaying = true;
   var soundTrack = new Media("/android_asset/www/assets/sound/notACare.mp3");//{play:function(){}};//
 
   var gPlayActive = false;
+
   var $ = function(q) {return document.getElementById(q)}
   function toggleGplayScreen(score) {
 
@@ -147,20 +150,18 @@
   window.game.onLoginSucceeded = function(result) {
       var playerDetail = result;
       userName = playerDetail['playerDisplayName'];
+      //window.game.showLeaderboard(leaderboardId);
       //alert('onLoginSucceeded: ' + playerDetail['playerId'] + ' ' + playerDetail['playerDisplayName']);
   };
   window.game.onLoginFailed = function(res) {
       alert('Sorry, you can\'t log in right now. Try again later.');
   };
-  var musicOptions = {
-      numberOfLoops: 100,
-      playAudioWhenScreenIsLocked: false
-  }
+
   setTimeout(function(){
-      if(!soundMuted){
-          soundTrack.play(musicOptions);
+      if(musicPlaying){
+          soundTrack.play({numberOfLoops: 100,playAudioWhenScreenIsLocked: false});
       }
-  }, 1000);
+  }, 2000);
 
   //
   // window.game.onSubmitScoreSucceeded = function() {

@@ -21,8 +21,13 @@ var Scoreboard = function(game) {
 
   this.bestText = this.game.add.bitmapText((this.game.width/2), 215, 'mainFont', '', 18);
   this.add(this.bestText);
-
+  this.menuWidth = (this.game.width / 2) - 150;
   // add our start button with a callback
+  // this.leaderBoardBG = this.game.add.graphics(50,50);
+  // this.leaderBoardBG.lineStyle(2, 0xFFFFFF, 1);
+  // this.leaderBoardBG.beginFill(0x1f1544, 1);
+  // this.leaderBoardBG.drawRect( this.menuWidth, (this.game.height/100)+ 300, 250, 80);
+  // this.add(this.leaderBoardBG);
 
   this.leaderBoardButton = this.game.add.button(this.game.width/2 - 5, 360, 'leaderboardBtn', this.gplayClick, this);
   this.leaderBoardButton.anchor.setTo(0.5,0.5);
@@ -72,7 +77,7 @@ Scoreboard.prototype.show = function(score) {
 
         if(!bestScore || bestScore < score) {
             bestScore = score;
-            //localStorage.setItem('bestScore', bestScore);
+            localStorage.setItem('bestScore', bestScore);
         }
         if(!playerId) {
             //playerId = Math.floor(Math.random()*99999999);

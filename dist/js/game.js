@@ -842,8 +842,13 @@ var Scoreboard = function(game) {
 
   this.bestText = this.game.add.bitmapText((this.game.width/2), 215, 'mainFont', '', 18);
   this.add(this.bestText);
-
+  this.menuWidth = (this.game.width / 2) - 150;
   // add our start button with a callback
+  // this.leaderBoardBG = this.game.add.graphics(50,50);
+  // this.leaderBoardBG.lineStyle(2, 0xFFFFFF, 1);
+  // this.leaderBoardBG.beginFill(0x1f1544, 1);
+  // this.leaderBoardBG.drawRect( this.menuWidth, (this.game.height/100)+ 300, 250, 80);
+  // this.add(this.leaderBoardBG);
 
   this.leaderBoardButton = this.game.add.button(this.game.width/2 - 5, 360, 'leaderboardBtn', this.gplayClick, this);
   this.leaderBoardButton.anchor.setTo(0.5,0.5);
@@ -893,7 +898,7 @@ Scoreboard.prototype.show = function(score) {
 
         if(!bestScore || bestScore < score) {
             bestScore = score;
-            //localStorage.setItem('bestScore', bestScore);
+            localStorage.setItem('bestScore', bestScore);
         }
         if(!playerId) {
             //playerId = Math.floor(Math.random()*99999999);
@@ -1150,7 +1155,7 @@ CharSel.prototype = {
 
 
     this.charSelText = this.game.add.bitmapText( (this.game.width/2) - 105 ,70 , 'mainFont',"Select Your Character", 20);
-
+    this.setUnlockedText();
 
 
     /** STEP 1 **/
@@ -1199,13 +1204,14 @@ CharSel.prototype = {
     this.musicBtnBG = this.game.add.graphics(50,50);
     this.musicBtnBG.lineStyle(2, 0xFFFFFF, 1);
     this.musicBtnBG.beginFill(0x1f1544, 1);
-    this.musicBtnBG.drawRect( this.background.menuWidth, (this.game.height/100)+ 275, 250, 80);
+    this.musicBtnBG.drawRect( this.background.menuWidth, (this.game.height/100)+ 275, 250, 50);
+    this.setMusicBtn();
+    //
+    // this.musicBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 350, 'musicOff', this.musicOff, this);
+    // this.musicBtn.anchor.setTo(0.5,0.5);
 
-    this.musicOffBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 350, 'musicOff', this.musicOff, this);
-    this.musicOffBtn.anchor.setTo(0.5,0.5);
-
-    this.musicOnBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 380, 'musicOn', this.musicOn, this);
-    this.musicOnBtn.anchor.setTo(0.5,0.5);
+    // this.musicOnBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 380, 'musicOn', this.musicOn, this);
+    // this.musicOnBtn.anchor.setTo(0.5,0.5);
 
 
     // this.startButton = this.game.add.button(this.game.width/2, this.game.height - 50, 'startButton', this.charClick, this);
@@ -1246,15 +1252,41 @@ CharSel.prototype = {
     this.game.scoreLabel = 0x706FF4;
     this.game.state.start('play');
   },
-  musicOn: function() {
-    isMusicPLaying = true;
-    soundTrack.stop();
-    soundTrack.play(musicOptions);
+  setUnlockedText: function(){
+    if(!!localStorage) {
+        this.bestScore = localStorage.getItem('bestScore') || 0;
+    }
+    if(this.bestScore > 500){
+      this.unlockedText = this.game.add.bitmapText( (this.game.width/2) - 90 , 5 , 'mainFont',"Unlocked album at", 20);
+      this.unlockedWebText = this.game.add.bitmapText( (this.game.width/2) - 105 , 25 , 'mainFont',"MedusasDisco.com/8bit", 20);
+      this.unlockedText.tint = 0xf46f70;
+      this.unlockedWebText.tint = 0xf46f70;
+    }
   },
-  musicOff: function() {
-    isMusicPLaying = false;
-    soundTrack.stop();
+  setMusicBtn: function(){
+    musicPlaying ?  this.musicButtonState = 'musicOn': this.musicButtonState = 'musicOff';
+
+    this.musicBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 350, this.musicButtonState, this.toggleMusic, this);
+    this.musicBtn.anchor.setTo(0.5,0.5);
   },
+  toggleMusic: function(){
+
+    this.musicBtn.destroy();
+
+    musicPlaying = !musicPlaying;
+
+    if (!musicPlaying){
+        soundTrack.stop();
+        this.musicButtonState = 'musicOff'
+    } else {
+        soundTrack.play({numberOfLoops: 100,playAudioWhenScreenIsLocked: false});
+        this.musicButtonState = 'musicOn';
+    }
+    this.game.musicPlaying = musicPlaying;
+
+    this.musicBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 350, this.musicButtonState, this.toggleMusic, this);
+    this.musicBtn.anchor.setTo(0.5,0.5);
+  }
 };
 
 module.exports = CharSel;
@@ -1490,6 +1522,9 @@ Play.prototype = {
     if (!localStorage.getItem('soundMuted')) {
         localStorage.setItem('soundMuted',false);
     }
+    if (!localStorage.getItem('musicPlaying')) {
+        localStorage.setItem('musicPlaying',true);
+    }
 
     // start the phaser arcade physics engine
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -1575,8 +1610,6 @@ Play.prototype = {
     // keep the spacebar from propogating up to the browser
     this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
 
-    this.playerId = localStorage.getItem('playerId') || Math.floor(Math.random()*99999999);
-
     this.score = 0;
     this.previousScore = 0;
     this.scoreLabel = this.game.add.bitmapText((this.game.width/2) - 40, 10, 'mainFont','Score: ', 20);
@@ -1627,6 +1660,7 @@ Play.prototype = {
     this.discoSound = this.game.add.audio('discoBall');
 
     this.game.soundMuted = soundMuted;
+    this.game.musicPlaying = musicPlaying;
     this.setAudioBtn();
 
     this.gameover = false;
@@ -2019,6 +2053,7 @@ Preload.prototype = {
     this.load.image('getReady', 'assets/menuImages/get-ready_2.png');
     this.load.image('musicOn', 'assets/menuImages/musicOnBtn.png');
     this.load.image('musicOff', 'assets/menuImages/musicOffBtn.png');
+    this.load.spritesheet('musicToggle', 'assets/menuImages/musicBtnSprite.png',19, 120, 2);
     this.load.image('back', 'assets/menuImages/back_v2.png');
 
     this.load.image('scoreboard', 'assets/menuImages/scoreboard_v3.png');
@@ -2029,7 +2064,7 @@ Preload.prototype = {
     // CharSelect assets
     this.load.image('gplayBtn', 'assets/menuImages/gplayBtn.png');
     this.load.image('gplayBtnLogout', 'assets/menuImages/gplayBtnLogout.png');
-    this.load.image('leaderboardBtn', 'assets/menuImages/leaderboardBtn.png');
+    this.load.image('leaderboardBtn', 'assets/leaderboardBtn.jpg');
     this.load.image('robinBtn', 'assets/chars/charButton_RobinBtn.png');
     this.load.image('wyntonBtn', 'assets/chars/charButton_WyntonBtn.png');
     this.load.image('hunterBtn', 'assets/chars/charButton_HunterBtn.png');

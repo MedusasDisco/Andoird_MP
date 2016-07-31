@@ -43,7 +43,7 @@ CharSel.prototype = {
 
 
     this.charSelText = this.game.add.bitmapText( (this.game.width/2) - 105 ,70 , 'mainFont',"Select Your Character", 20);
-
+    this.setUnlockedText();
 
 
     /** STEP 1 **/
@@ -92,13 +92,14 @@ CharSel.prototype = {
     this.musicBtnBG = this.game.add.graphics(50,50);
     this.musicBtnBG.lineStyle(2, 0xFFFFFF, 1);
     this.musicBtnBG.beginFill(0x1f1544, 1);
-    this.musicBtnBG.drawRect( this.background.menuWidth, (this.game.height/100)+ 275, 250, 80);
+    this.musicBtnBG.drawRect( this.background.menuWidth, (this.game.height/100)+ 275, 250, 50);
+    this.setMusicBtn();
+    //
+    // this.musicBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 350, 'musicOff', this.musicOff, this);
+    // this.musicBtn.anchor.setTo(0.5,0.5);
 
-    this.musicOffBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 350, 'musicOff', this.musicOff, this);
-    this.musicOffBtn.anchor.setTo(0.5,0.5);
-
-    this.musicOnBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 380, 'musicOn', this.musicOn, this);
-    this.musicOnBtn.anchor.setTo(0.5,0.5);
+    // this.musicOnBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 380, 'musicOn', this.musicOn, this);
+    // this.musicOnBtn.anchor.setTo(0.5,0.5);
 
 
     // this.startButton = this.game.add.button(this.game.width/2, this.game.height - 50, 'startButton', this.charClick, this);
@@ -139,15 +140,41 @@ CharSel.prototype = {
     this.game.scoreLabel = 0x706FF4;
     this.game.state.start('play');
   },
-  musicOn: function() {
-    isMusicPLaying = true;
-    soundTrack.stop();
-    soundTrack.play(musicOptions);
+  setUnlockedText: function(){
+    if(!!localStorage) {
+        this.bestScore = localStorage.getItem('bestScore') || 0;
+    }
+    if(this.bestScore > 500){
+      this.unlockedText = this.game.add.bitmapText( (this.game.width/2) - 90 , 5 , 'mainFont',"Unlocked album at", 20);
+      this.unlockedWebText = this.game.add.bitmapText( (this.game.width/2) - 105 , 25 , 'mainFont',"MedusasDisco.com/8bit", 20);
+      this.unlockedText.tint = 0xf46f70;
+      this.unlockedWebText.tint = 0xf46f70;
+    }
   },
-  musicOff: function() {
-    isMusicPLaying = false;
-    soundTrack.stop();
+  setMusicBtn: function(){
+    musicPlaying ?  this.musicButtonState = 'musicOn': this.musicButtonState = 'musicOff';
+
+    this.musicBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 350, this.musicButtonState, this.toggleMusic, this);
+    this.musicBtn.anchor.setTo(0.5,0.5);
   },
+  toggleMusic: function(){
+
+    this.musicBtn.destroy();
+
+    musicPlaying = !musicPlaying;
+
+    if (!musicPlaying){
+        soundTrack.stop();
+        this.musicButtonState = 'musicOff'
+    } else {
+        soundTrack.play({numberOfLoops: 100,playAudioWhenScreenIsLocked: false});
+        this.musicButtonState = 'musicOn';
+    }
+    this.game.musicPlaying = musicPlaying;
+
+    this.musicBtn = this.game.add.button(this.game.width/2, (this.game.height/100)+ 350, this.musicButtonState, this.toggleMusic, this);
+    this.musicBtn.anchor.setTo(0.5,0.5);
+  }
 };
 
 module.exports = CharSel;

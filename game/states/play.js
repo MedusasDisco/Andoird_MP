@@ -28,6 +28,9 @@ Play.prototype = {
     if (!localStorage.getItem('soundMuted')) {
         localStorage.setItem('soundMuted',false);
     }
+    if (!localStorage.getItem('musicPlaying')) {
+        localStorage.setItem('musicPlaying',true);
+    }
 
     // start the phaser arcade physics engine
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -113,8 +116,6 @@ Play.prototype = {
     // keep the spacebar from propogating up to the browser
     this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
 
-    this.playerId = localStorage.getItem('playerId') || Math.floor(Math.random()*99999999);
-
     this.score = 0;
     this.previousScore = 0;
     this.scoreLabel = this.game.add.bitmapText((this.game.width/2) - 40, 10, 'mainFont','Score: ', 20);
@@ -165,6 +166,7 @@ Play.prototype = {
     this.discoSound = this.game.add.audio('discoBall');
 
     this.game.soundMuted = soundMuted;
+    this.game.musicPlaying = musicPlaying;
     this.setAudioBtn();
 
     this.gameover = false;
