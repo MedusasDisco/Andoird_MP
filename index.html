@@ -93,9 +93,11 @@
 
   var gPlayActive = false;
 
+  var swampMonster = 0;
+
   var $ = function(q) {return document.getElementById(q)}
   function toggleGplayScreen(score) {
-
+      swampMonster = score;
 
       // switch(score) {
       //     case 100:
@@ -210,7 +212,7 @@
     <div class="content">
         <div id="logIn" onclick="window.game.login();isLoggedIn()"></div>
         <div id="logOut" onclick="window.game.logout();isLoggedIn()"></div>
-        <div id="showLeaderboard" onclick="window.game.showLeaderboard(leaderboardId);"></div>
+        <div id="showLeaderboard" onclick="window.game.submitScore(leaderboardId, swampMonster);window.game.showLeaderboard(leaderboardId);"></div>
         <div class="backBtn" onClick="toggleGplayScreen()">
         </div>
         <!-- <br>
